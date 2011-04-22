@@ -7,6 +7,7 @@ QT += network xml
 
 INCLUDEPATH += ../server/src
 INCLUDEPATH += ../client/src
+
 LIBS += -L../client/lib
 LIBS += -L../server/lib
 
