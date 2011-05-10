@@ -174,11 +174,34 @@ bool HttpClient::readResponseBody()
                 return false;
         }
         else {
-                QByteArray data = socket->readAll();
+                /*QByteArray data = socket->readAll();
                 qCritical() << this << "XmlRpcClient::readResponseBody():"
                                 << "unknown content read method" << endl
                                 << responseHeader.toString() << endl;
-                emitError( "Unknown content read method" );
+                emitError( "Unknown content read method" );*/
+
+                /*Code sended by Kevin Tallakson(ktallakson@gmail.com) */
+
+                QByteArray data = socket->peek(socket->bytesAvailable());
+
+                static const QByteArray METHOD_RESPONSE_TERM_TAG("</methodResponse>");
+
+                int termTagIndex = data.indexOf(METHOD_RESPONSE_TERM_TAG);
+
+                bool foundEndOfResponse = termTagIndex > 0;
+
+                if (foundEndOfResponse) {
+                    int remainderIndex = termTagIndex + METHOD_RESPONSE_TERM_TAG.size();
+
+                    if (data[remainderIndex] == '\r') ++remainderIndex;
+                    if (data[remainderIndex] == '\n') ++remainderIndex;
+
+                    data.truncate(remainderIndex);
+                }
+
+                responseBodyData += data;
+                socket->read(data.size());
+                return foundEndOfResponse;
         }
 
         return false;
