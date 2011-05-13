@@ -1,0 +1,18 @@
+# use glob syntax.
+syntax: glob
+
+*.exe
+*.dll
+*.obj
+*.res
+*.manifest
+*.lib
+*.pdb
+moc*.cpp
+ui*.h
+*.log
+*.bak
+*.db
+*.pro.*
+*.ilk
+Makefile*
