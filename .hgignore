@@ -15,4 +15,7 @@ ui*.h
 *.db
 *.pro.*
 *.ilk
+*.o
+*.a
+*.so
 Makefile*
