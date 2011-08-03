@@ -155,7 +155,7 @@ private:
 };
 
 
-class SslParams : public QObject
+/*class SslParams : public QObject
 {
       Q_OBJECT
 public:
@@ -164,7 +164,7 @@ public:
       QSslCertificate certificate;
       QList<QSslCertificate> ca;
       QSslKey privateKey;
-};
+};*/
 
 
 /**
@@ -220,7 +220,9 @@ private:
       Callbacks callbacks;
       ObjectMethods objectMethods;
 
+#ifndef QT_NO_OPENSSL
       SslParams * sslParams;
+#endif
 };
 
 #endif

@@ -12,7 +12,7 @@
 #include <QSslError>
 
 // #define HTTPS_CLIENT_DEBUG
-
+#ifndef QT_NO_OPENSSL
 class SslParams_ : public QObject
 {
       Q_OBJECT
@@ -47,5 +47,6 @@ private slots:
         void onEncryptedConnection();
         void onSslErrors(const QList<QSslError> &errors);
 };
+#endif //#ifndef QT_NO_OPENSSL
 
 #endif // HTTPSCLIENT_H

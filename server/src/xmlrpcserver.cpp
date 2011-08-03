@@ -29,7 +29,7 @@ static QVariant parseXmlRpcValue( const QDomElement & e, QString& err );
 static QVariant parseXmlRpcStruct( const QDomElement & e, QString& err );
 static QVariant parseXmlRpcArray( const QDomElement & e, QString& err );
 
-
+#ifndef QT_NO_OPENSSL
 SslParams::SslParams( const QString & certFile, const QString & keyFile, QObject * parent )
             : QObject( parent )
 {
@@ -42,9 +42,10 @@ SslParams::SslParams( const QString & certFile, const QString & keyFile, QObject
 
       QFile fk( keyFile, this );
       fk.open( QFile::ReadOnly );
-      privateKey = QSslKey( fk.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey/*, passwd*/ );
+      privateKey = QSslKey( fk.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);//, passwd );
       fk.close();
 }
+#endif
 
 inline bool isFault( const QVariant& v )
 {
@@ -203,17 +204,27 @@ HttpServer::HttpServer( QAbstractSocket * parent )
       qDebug() << this << "HttpServer():" << parent;
 #endif
 
-      connect( socket, SIGNAL( readyRead() ), this,  SLOT( slotReadyRead() ) );
-      connect( socket, SIGNAL( bytesWritten(qint64) ), this, SLOT( slotBytesWritten(qint64) ) );
-
-      if ( socket->inherits( "QSslSocket" ) ) {
+    connect( socket, SIGNAL( readyRead() ), this,  SLOT( slotReadyRead() ) );
+    connect( socket, SIGNAL( bytesWritten(qint64) ), this, SLOT( slotBytesWritten(qint64) ) );
+#ifndef QT_NO_OPENSSL
+    if ( socket->inherits( "QSslSocket" ) )
+        {
             QSslSocket *sslServer = qobject_cast<QSslSocket *>( socket );
             sslServer->startServerEncryption();
-      }
-      else {
+        }
+    else
+        {
             if ( socket->bytesAvailable() > 0 )
-                  slotReadyRead();
-      }
+                {
+                    slotReadyRead();
+                }
+        }
+#else
+    if ( socket->bytesAvailable() > 0 )
+        {
+            slotReadyRead();
+        }
+#endif
 }
 
 
@@ -414,29 +425,39 @@ XmlRpcServer::XmlRpcServer( QObject * parent,
 #ifdef DEBUG_XMLRPC
       qDebug() << this << "XmlRpcServer(): parent" << parent;
 #endif
+#ifndef QT_NO_OPENSSL
       sslParams = NULL;
       if ( !cert.isEmpty() && !key.isEmpty() )
             sslParams = new SslParams( cert, key, this );
+#endif
 }
 
 void XmlRpcServer::incomingConnection( int socketDescriptor )
 {
 #ifdef DEBUG_XMLRPC
-      qDebug() << this << "new incoming connection";
+    qDebug() << this << "new incoming connection";
 #endif
-      QAbstractSocket * s = NULL;
-      if ( sslParams != NULL && !sslParams->certificate.isNull() ) {
+
+    QAbstractSocket * s = NULL;
+#ifndef QT_NO_OPENSSL
+    if ( sslParams != NULL && !sslParams->certificate.isNull() )
+        {
             s = new QSslSocket( this );
             s->setSocketDescriptor( socketDescriptor );
 
             ((QSslSocket *)s)->setLocalCertificate( sslParams->certificate );
             ((QSslSocket *)s)->setPrivateKey( sslParams->privateKey );
             ((QSslSocket *)s)->setCaCertificates( sslParams->ca );
-      }
-      else {
+        }
+    else
+        {
             s = new QTcpSocket( this );
             s->setSocketDescriptor( socketDescriptor );
-      }
+        }
+#else
+      s = new QTcpSocket( this );
+      s->setSocketDescriptor( socketDescriptor );
+#endif
 
       Q_ASSERT( s->state() == QAbstractSocket::ConnectedState );
       connect( s, SIGNAL(disconnected()), this, SLOT(slotSocketDisconnected()) );
@@ -696,11 +717,14 @@ void XmlRpcServer::slotRequestReceived( HttpServer * p, const QHttpRequestHeader
       }
 
       QAbstractSocket * s = p->getSocket();
-      if ( s->inherits( "QSslSocket" ) ) {
+#ifndef QT_NO_OPENSSL
+    if ( s->inherits( "QSslSocket" ) )
+        {
             QSslSocket * sslSkt = qobject_cast<QSslSocket *>(s);
             QString commonName = sslSkt-> peerCertificate().subjectInfo( QSslCertificate::CommonName );
             params.append( commonName );
-      }
+        }
+#endif
 
       // params parsed, now invoke registered slot.
       QVariant retVal;

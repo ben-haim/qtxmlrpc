@@ -6,6 +6,8 @@ CONFIG += staticlib
 #CONFIG += dll
 QT -= gui
 
+#DEFINES += QT_NO_OPENSSL
+
 CONFIG(debug, debug|release) {
 OBJECTS_DIR = build/debug
 MOC_DIR = build/debug
