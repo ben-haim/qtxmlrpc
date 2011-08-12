@@ -39,3 +39,4 @@ win32 {
 unix:!macx {
     LIBS += -ludev
 }
+
