@@ -154,8 +154,8 @@ private:
       QVariant echo;
 };
 
-
-/*class SslParams : public QObject
+#ifndef QT_NO_OPENSSL
+class SslParams : public QObject
 {
       Q_OBJECT
 public:
@@ -164,7 +164,8 @@ public:
       QSslCertificate certificate;
       QList<QSslCertificate> ca;
       QSslKey privateKey;
-};*/
+};
+#endif //QT_NO_OPENSSL
 
 
 /**
