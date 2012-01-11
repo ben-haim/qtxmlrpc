@@ -7,7 +7,8 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS = ./client \
+SUBDIRS = ./utils \
+          ./client \
           ./server \
           ./xmlrpctest
 

@@ -1,24 +1,26 @@
 #
-# Qxmlrpc Server
+# Qxmlrpc Utils
 #
 TEMPLATE = lib
 CONFIG += staticlib
-QT = core network xml
+QT = core xml network
 DESTDIR = ./lib
 
-INCLUDEPATH += ../utils/src
+#DEFINES += QT_NO_OPENSSL
 
 CONFIG(debug, debug|release) {
+TARGET = xmlrpcutilsd
 OBJECTS_DIR = build/debug
 MOC_DIR = build/debug
-TARGET = xmlrpcserverd
 }
 else {
+TARGET = xmlrpcutils
 OBJECTS_DIR = build/release
 MOC_DIR = build/release
-TARGET = xmlrpcserver
 }
 
-include(server.pri)
+include(utils.pri)
+
+
 
 

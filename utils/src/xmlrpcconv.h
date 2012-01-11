@@ -2,8 +2,10 @@
 #define XMLRPCCONV_H
 
 #include <QByteArray>
+#include <QList>
 #include <QVariant>
 #include <QHttpResponseHeader>
+#include <QDomElement>
 
 QByteArray toXmlRpcRequest( const QString m, const QList<QVariant>& l );
 QVariant fromXmlRpcResponse( const QString d, QString &err );

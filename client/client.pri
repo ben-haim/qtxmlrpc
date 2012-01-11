@@ -1,5 +1,4 @@
-QT *= network \
-          xml
+
 
 SOURCES += $$PWD/src/clientprotocol.cpp \
     $$PWD/src/httpclient.cpp \
