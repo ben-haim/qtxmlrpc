@@ -3,16 +3,21 @@
 
 #include <QObject>
 #include <QVariant>
+#include <xmlrpcserver.h>
 
-class Server : QObject
+
+class TServer : QObject
 {
       Q_OBJECT
 
 public:
-      Server( const QString &address, quint16 port, QObject *parent = 0 );
+      TServer( const QString &address, quint16 port, QObject *parent = 0 );
+      ~TServer();
 
 private slots:
       QVariant testFunc( const QVariant &param );
+private:
+      XmlRpcServer *srv;
 };
 
 #endif // SERVER_H
