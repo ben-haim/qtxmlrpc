@@ -22,6 +22,7 @@ contains( CONFIG, dll ) {
     win32:DEFINES += QLOGGER_SHARED
 }
 
+include(../utils/utils.pri)
 include(client.pri)
 
 
@@ -33,10 +34,4 @@ CONFIG(debug, debug|release) {
     TARGET = xmlrpcclient
 }
 
-win32 {
-    LIBS += -lsetupapi -luuid -ladvapi32
-}
-unix:!macx {
-    LIBS += -ludev
-}
 

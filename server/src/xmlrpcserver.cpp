@@ -7,27 +7,23 @@
 #include <QFile>
 
 #include "xmlrpcserver.h"
-
-
-// initialization speed up for createFault() and isFault()
-static QString faultCode("faultCode");
-static QString faultString("faultString");
+#include "xmlrpcconv.h"
 
 // returns default http header for our xmlrpc server
-static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength );
+//static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength );
 // create xmlrpc response from QVariant
-static QByteArray toXmlRpcResponse( const QVariant& v );
+//static QByteArray toXmlRpcResponse( const QVariant& v );
 
 // QVariant to xml conversions
 // use QByteArray & reference, becouse it is faster, then return QByteArray
-static void toXmlRpcValue( const int spaces, const QVariant & child, QByteArray & b );
-static void toXmlRpcStruct( const int spaces, const QVariantMap & child, QByteArray & b );
-static void toXmlRpcArray( const int spaces, const QVariantList & child, QByteArray & b );
+//static void toXmlRpcValue( const int spaces, const QVariant & child, QByteArray & b );
+//static void toXmlRpcStruct( const int spaces, const QVariantMap & child, QByteArray & b );
+//static void toXmlRpcArray( const int spaces, const QVariantList & child, QByteArray & b );
 
 // xml to QVariant conversions
-static QVariant parseXmlRpcValue( const QDomElement & e, QString& err );
-static QVariant parseXmlRpcStruct( const QDomElement & e, QString& err );
-static QVariant parseXmlRpcArray( const QDomElement & e, QString& err );
+//static QVariant parseXmlRpcValue( const QDomElement & e, QString& err );
+//static QVariant parseXmlRpcStruct( const QDomElement & e, QString& err );
+//static QVariant parseXmlRpcArray( const QDomElement & e, QString& err );
 
 #ifndef QT_NO_OPENSSL
 SslParams::SslParams( const QString & certFile, const QString & keyFile, QObject * parent )
@@ -47,7 +43,7 @@ SslParams::SslParams( const QString & certFile, const QString & keyFile, QObject
 }
 #endif
 
-inline bool isFault( const QVariant& v )
+/*inline bool isFault( const QVariant& v )
 {
       if( v.type() != QVariant::Map )
             return false;
@@ -57,7 +53,7 @@ inline bool isFault( const QVariant& v )
       return m.size() == 2 &&
                   m.contains(faultCode) &&  m[faultCode].type() == QVariant::Int &&
                   m.contains(faultString) &&  m[faultString].type() == QVariant::String;
-}
+}*/
 
 
 Protocol::Protocol( QAbstractSocket * parent, const int _timeout )
@@ -182,7 +178,7 @@ void Protocol::__slotBytesWritten( qint64 /*bytes*/ )
       restartProtocolTimeoutTimer();
 }
 
-static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength )
+/*static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "xmlRpcHeader():" << contentLength;
@@ -194,7 +190,7 @@ static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength )
       h.setValue( "server", "qt-xmlrpc" );
 
       return h;
-}
+}*/
 
 
 HttpServer::HttpServer( QAbstractSocket * parent )
@@ -794,7 +790,7 @@ void XmlRpcServer::slotReplySent( HttpServer * p )
 }
 
 
-void toXmlRpcArray( const int spaces, const QVariantList & child, QByteArray & b )
+/*void toXmlRpcArray( const int spaces, const QVariantList & child, QByteArray & b )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "toXmlRpcArray()";
@@ -804,10 +800,10 @@ void toXmlRpcArray( const int spaces, const QVariantList & child, QByteArray & b
 
       while( i.hasNext() )
             toXmlRpcValue( spaces + 2, i.next(), b );
-}
+}*/
 
 
-void toXmlRpcStruct( const int spaces, const QVariantMap & child, QByteArray & b )
+/*void toXmlRpcStruct( const int spaces, const QVariantMap & child, QByteArray & b )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "toXmlRpcStruct()";
@@ -834,10 +830,10 @@ void toXmlRpcStruct( const int spaces, const QVariantMap & child, QByteArray & b
 #endif
             b.append( "</member>" );
       }
-}
+}*/
 
 
-void toXmlRpcValue( const int spaces, const QVariant & child, QByteArray & b )
+/*void toXmlRpcValue( const int spaces, const QVariant & child, QByteArray & b )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "toXmlRpcValue()";
@@ -917,10 +913,10 @@ void toXmlRpcValue( const int spaces, const QVariant & child, QByteArray & b )
                         << child.typeName() << endl << child;
             qFatal("programming error");
       }
-}
+}*/
 
 
-QByteArray toXmlRpcResponse( const QVariant& v )
+/*QByteArray toXmlRpcResponse( const QVariant& v )
 {
 #ifdef XMLRPC_WITHSPACES
       QByteArray r( "<?xml version=\"1.0\"?>\n<methodResponse>" );
@@ -967,10 +963,10 @@ QByteArray toXmlRpcResponse( const QVariant& v )
 #endif
 
       return r;
-}
+}*/
 
 
-QVariant parseXmlRpcValue( const QDomElement & e, QString& err )
+/*QVariant parseXmlRpcValue( const QDomElement & e, QString& err )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "parseXmlRpcValue():" << e.tagName();
@@ -1012,10 +1008,10 @@ QVariant parseXmlRpcValue( const QDomElement & e, QString& err )
             err = "unknown type: '" + type + "'";
 
       return v;
-}
+}*/
 
 
-QVariant parseXmlRpcStruct( const QDomElement & e, QString& err )
+/*QVariant parseXmlRpcStruct( const QDomElement & e, QString& err )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "parseXmlRpcStruct():" << e.tagName();
@@ -1043,10 +1039,10 @@ QVariant parseXmlRpcStruct( const QDomElement & e, QString& err )
       }
 
       return r;
-}
+}*/
 
 
-QVariant parseXmlRpcArray( const QDomElement & e, QString& err )
+/*QVariant parseXmlRpcArray( const QDomElement & e, QString& err )
 {
 #ifdef DEBUG_XMLRPC
       qDebug() << "parseXmlRpcArray():" << e.tagName();
@@ -1068,7 +1064,7 @@ QVariant parseXmlRpcArray( const QDomElement & e, QString& err )
       }
 
       return r;
-}
+}*/
 
 
 DeferredEcho::DeferredEcho( const QVariant& e )
