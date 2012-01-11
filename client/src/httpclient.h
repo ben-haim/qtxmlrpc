@@ -60,7 +60,7 @@ private:
 
         qint64 chunkedSize;
 
-        static const int requestTimeout = 60000; // msecs
+        static const int requestTimeout = 30000; // msecs
 };
 
 #endif // HTTPCLIENT_H

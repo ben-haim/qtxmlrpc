@@ -34,7 +34,7 @@ signals:
         void done();
 
 protected:
-        QPointer<QAbstractSocket> socket;//alex312@meta.ua 23.11.10
+        QPointer<QAbstractSocket> socket;
 
         QString dstHost;
         quint16 dstPort;
