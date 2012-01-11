@@ -11,6 +11,10 @@ TServer::TServer( const QString &address, quint16 port, QObject *parent )
     if ( srv->listen( QHostAddress( address ), port ) )
         {
             srv->registerSlot( this, SLOT( testFunc(QVariant) ) );
+            std::cout<<QTime::currentTime().toString().toStdString()<<" Start XML-RPC server. "
+                    <<"Adress:"<<QHostAddress( address ).toString().toStdString()
+                   <<" Port:"<<port
+                   <<std::endl;
         }
 }
 
