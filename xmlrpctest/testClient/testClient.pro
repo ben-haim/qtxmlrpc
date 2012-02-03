@@ -9,6 +9,8 @@ DESTDIR = bin
 
 QT += network xml
 
+UI_HEADERS_DIR = build
+
 
 INCLUDEPATH += ../../server/src
 INCLUDEPATH += ../../client/src
@@ -22,6 +24,7 @@ CONFIG(debug, debug|release) {
 OBJECTS_DIR = build/debug
 MOC_DIR = build/debug
 TARGET = testClientd
+CONFIG += console
 }
 else {
 OBJECTS_DIR = build/release

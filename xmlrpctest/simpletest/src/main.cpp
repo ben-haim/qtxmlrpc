@@ -5,49 +5,58 @@
 #include "server.h"
 #include "client.h"
 #include <iostream>
-
-void sleep(int ms)
+void sleep( int ms )
 {
-    QMutex mutx;
-    QWaitCondition wcond;
+    QMutex          mutx;
+    QWaitCondition  wcond;
     mutx.lock();
-    wcond.wait(&mutx,ms);
+    wcond.wait( &mutx, ms );
     mutx.unlock();
 }
 
 int main( int argc, char **argv )
 {
-      QCoreApplication app( argc, argv );
-      QTimer::singleShot(4000,&app,SLOT(quit()));
+    QCoreApplication    app( argc, argv );
+    QTimer::singleShot( 4000, &app, SLOT( quit()) );
 
-      QString address = "127.0.0.1";
-      quint16 port = 8080;
+    QString address= "127.0.0.1";
+    quint16 port= 8080;
+    TServer s( address, port );
+    Client  c( address, port );
 
-      TServer s( address, port );
-      Client c( address, port  );
+    /* NB: Responses are not syncronized */
+    c.testFunc( QVariant( "test") );
 
-      /* NB: Responses are not syncronized */
+    /*
+     * sleep(1000);
+     */
+    c.testFunc( QVariant( 1) );
 
-      c.testFunc( QVariant( "test" ) );
+    /*
+     * sleep(1000);
+     */
+    c.testFunc( QVariant( true) );
 
-      //sleep(1000);
-      c.testFunc( QVariant( 1 ) );
-      //sleep(1000);
-      c.testFunc( QVariant( true ) );
-      //sleep(1000);
-      c.testFunc( QVariant( 1.5 ) );
-      //sleep(1000);
-      QVariant t = c(QVariant("test as function"));
-      std::cout << t.toString().toStdString()<<std::endl;
-      QVariantMap m;
-      m["one"] = 1;
-      m["two"] = 2;
-      m["three"] = 3;
-      c.testFunc( QVariant( m ) );
+    /*
+     * sleep(1000);
+     */
+    c.testFunc( QVariant( 1.5) );
 
-      c.testFunc( QVariant( QByteArray("Hello world!") ) );
-      //sleep(1000);
+    /*
+     * sleep(1000);
+     */
+    QVariant    t= c( QVariant( "test as function") );
+    std::cout << t.toString().toStdString() << std::endl;
 
-      return app.exec();
+    QVariantMap m;
+    m["one"]= 1;
+    m["two"]= 2;
+    m["three"]= 3;
+    c.testFunc( QVariant( m) );
+    c.testFunc( QVariant( QByteArray( "Hello world!")) );
+
+    /*
+     * sleep(1000);
+     */
+    return app.exec();
 }
-

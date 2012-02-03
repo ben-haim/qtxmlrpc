@@ -1,28 +1,31 @@
+
+
 #ifndef XMLRPCCLIENT_H
 #define XMLRPCCLIENT_H
-
 #include "httpclient.h"
 #include <QObject>
 #include <QString>
 #include <QVariant>
 #include <QByteArray>
 #include <QVariantList>
-
-class XmlRpcClient : public HttpClient
+class XmlRpcClient :
+    public HttpClient
 {
-        Q_OBJECT
+    Q_OBJECT
+
+/*
+ -----------------------------------------------------------------------------------------------------------------------
+ -----------------------------------------------------------------------------------------------------------------------
+ */
 public:
-        XmlRpcClient( const QString &host,
-                      const quint16 port );
-
-        void execute( const QString &method,
-                      const QVariantList &params );
-
+    XmlRpcClient( const QString &host, const quint16 port );
+    void    execute( const QString &method, const QVariantList &params );
+    bool    isReady() const;
 signals:
-        void dataReady( const QVariant &data );
-
-private slots:
-        void onDataReady( const QByteArray &data );
+    void    dataReady( const QVariant &data );
+private slots :
+    void onDataReady ( const QByteArray &data );
+private:
+    bool isReady_;
 };
-
-#endif // XMLRPCCLIENT_H
+#endif /* XMLRPCCLIENT_H */
