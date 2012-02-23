@@ -252,3 +252,6 @@ void Client_::stopTimers()
     if ( connectTimeoutTimer->isActive() ) connectTimeoutTimer->stop();
     if ( reconnectSleepTimer->isActive() ) reconnectSleepTimer->stop();
 }
+
+
+#include "moc_clientprotocol.cpp"

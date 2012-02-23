@@ -744,3 +744,5 @@ DeferredResult::~DeferredResult()
     qDebug() << this << "~DeferredResult()";
     #endif
 }
+
+#include "moc_xmlrpcserver.cpp"

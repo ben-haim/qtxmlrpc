@@ -13,19 +13,20 @@ class XmlRpcClient :
 {
     Q_OBJECT
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
     XmlRpcClient( const QString &host, const quint16 port );
     void    execute( const QString &method, const QVariantList &params );
     bool    isReady() const;
+    QVariant response() const;
+    QString errString() const;
 signals:
     void    dataReady( const QVariant &data );
 private slots :
     void onDataReady ( const QByteArray &data );
+    void onError(const QString & errStr);
 private:
     bool isReady_;
+    QString     err_;
+    QVariant    response_;
 };
 #endif /* XMLRPCCLIENT_H */

@@ -1,6 +1,7 @@
 
 
 #include "protocol.h"
+
 QString ClientProtocol::unconnectedNoDstHost= QString( "socket unconnected, no dstHost" );
 ClientProtocol::ClientProtocol( QTcpSocket *parent, const QString &_dstHost, const quint16 _dstPort ) :
     QObject( parent ),
@@ -354,4 +355,6 @@ void ClientProtocol::slotBytesWritten( qint64 bytes )
             /* restart timeout timer. */
             protocolTimeoutTimer->start( protocolTimeout );
         }
-        
+
+
+#include "moc_protocol.cpp"

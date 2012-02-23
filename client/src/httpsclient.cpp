@@ -61,4 +61,7 @@ void HttpsClient::onSslErrors( const QList<QSslError> & )
 {
     qobject_cast < QSslSocket * > ( socket )->ignoreSslErrors();
 }
+
+#include "moc_httpsclient.cpp"
+
 #endif /* ifndef QT_NO_OPENSSL */
