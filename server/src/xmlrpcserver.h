@@ -46,20 +46,14 @@ inline QVariant createFault ( const int code, const QString &msg )
     stops when destruct.
  =======================================================================================================================
  */
-class Protocol :
-    public QObject
+class Protocol : public QObject
 {
     Q_OBJECT
-
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
 
     /* Timeout activates, if it is above zero, msecs. */
     Protocol( QAbstractSocket *parent, const int _timeout= 0 );
-    ~               Protocol();
+    ~Protocol();
     void            setTimeout( const int _timeout );
     void            stopProtocolTimeout()   { setTimeout( 0 ); }
     QAbstractSocket *getSocket()            { return socket; }
@@ -71,10 +65,6 @@ public:
 signals:
     void    protocolTimeout( Protocol * );
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 protected:
     void            timerEvent( QTimerEvent *event );
     void            restartProtocolTimeoutTimer();
@@ -87,34 +77,25 @@ protected:
 
 /* very basic HttpServer for XmlRpc */
 class   QHttpRequestHeader;
-class HttpServer :
-    public Protocol
+
+class HttpServer : public Protocol
 {
     Q_OBJECT
-
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
-    HttpServer( QAbstractSocket *parent );
+    HttpServer( QAbstractSocket *parent, const int _timeout = 10000  );
 public slots :
 
     /* sends xmlrpc response from QVariant param */
-    void slotSendReply ( const QByteArray & );
+    void    slotSendReply ( const QByteArray & );
     void    slotSendReply( const QVariant & );
 protected slots :
-    void slotReadyRead();
+    void    slotReadyRead();
     void    slotBytesWritten( qint64 bytes );
 signals:
     void    parseError( HttpServer * );
     void    requestReceived( HttpServer *, const QHttpRequestHeader &h, const QByteArray &body );
     void    replySent( HttpServer * );
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 private:
     bool    readRequestHeader();
     bool    readRequestBody();
@@ -125,7 +106,7 @@ private:
     QHttpRequestHeader requestHeader;
     qint64 bytesWritten;
     qint64 bytesToWrite;
-    const static int defaultTimeout= 100000;    /* 100 secs */
+    //const static int defaultTimeout = 100000;    /* 100 secs */
 };
 
 /*
@@ -137,15 +118,9 @@ private:
     after emmiting result.
  =======================================================================================================================
  */
-class DeferredResult :
-    public QObject
+class DeferredResult : public QObject
 {
     Q_OBJECT
-
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
     DeferredResult();
     ~       DeferredResult();
@@ -154,11 +129,9 @@ signals:
     void    sendReply( const QByteArray & );
 };
 
-class DeferredEcho :
-    public DeferredResult
+class DeferredEcho : public DeferredResult
 {
     Q_OBJECT
-
 public:
     DeferredEcho( const QVariant &e );
 
@@ -168,11 +141,9 @@ private:
 };
 
 #ifndef QT_NO_OPENSSL
-class SslParams :
-    public QObject
+class SslParams : public QObject
 {
     Q_OBJECT
-
 public:
     SslParams( const QString &certFile, const QString &keyFile, QObject *parent= 0 );
     QSslCertificate         certificate;
@@ -183,11 +154,10 @@ public:
 
 /* @author kisel2626@gmail.com */
 class   QDomElement;
-class XmlRpcServer :
-    public QTcpServer
+
+class XmlRpcServer : public QTcpServer
 {
     Q_OBJECT
-
 public:
     XmlRpcServer( QObject *parent= 0, const QString &cert= "", const QString &key= "",
                   const QByteArray &passwd= QByteArray() );
@@ -198,15 +168,12 @@ public:
      * path + slot should be unique.
      */
     void    registerSlot( QObject *receiver, const char *slot, QByteArray path= "/RPC2/" );
-    public slots : QVariant echo ( const QVariant &e )
-      {
-        return e;
-      }
+public slots :
+    QVariant echo ( const QVariant &e ){return e;}
     DeferredResult  *deferredEcho( const QVariant &e )  { return new DeferredEcho( e ); }
-    private slots :
-
+private slots :
     /*
-     * we don't support SSL yet, ;
+     * we don't support SSL yet,
      * if you need SSL, connection handling design must be revised a bit ;
      * void slotNewConnection();
      * ;

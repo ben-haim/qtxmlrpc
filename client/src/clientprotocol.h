@@ -12,8 +12,7 @@
 
 //    #define DEBUG_PROTOCOL
 
-class Client_ :
-    public QObject
+class Client_ :  public QObject
 {
     Q_OBJECT
 

@@ -9,28 +9,20 @@
 #include <QtNetwork/QHostAddress>
 
 /* #define DEBUG_PROTOCOL */
-class QTcpSocket;
-class ClientProtocol :
-    public QObject
+
+class  QTcpSocket;
+
+class ClientProtocol : public QObject
 {
     Q_OBJECT
-
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
-
     /*
-     * parent - должен быть ребенком QTcpSocket, ;
+     * parent - должен быть ребенком QTcpSocket,
      * от и есть Socket, с которой работаем. Если
-     * кто-то удаляет ;
-     * Socket, она удалит нас как детей, таким образом
-     * протоколы не будут ;
-     * работать с удаленной Socket ;
+     * кто-то удаляет  Socket, она удалит нас как детей, таким образом
+     * протоколы не будут работать с удаленной Socket
      * если _dstHost == QString::null, то для работы протокола
-     * необходим ;
-     * сконнекченный сокет. Иначе выбрасываем error.
+     * необходим сконнекченный сокет. Иначе выбрасываем error.
      */
     ClientProtocol( QTcpSocket *parent, const QString &_dstHost= QString::null, const quint16 _dstPort= 0 );
         #ifdef DEBUG_PROTOCOL
@@ -39,7 +31,7 @@ public:
     void            disconnectFromSocketOnDone()    { disconnectFromSocketOnDoneFlag= true; }
     QTcpSocket      *getSocket()                    { return socket; }
     static QString  unconnectedNoDstHost;
-    public slots :
+public slots :
 
     /*
      * if socket connected, call protocolStart(), slotReadyRead() if bytes available ;
@@ -57,10 +49,6 @@ signals:
     void            error( const QString &errTxt );
     void            done();
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 protected:
 
     /*
@@ -106,10 +94,6 @@ protected:
     /* emitError, if can't write a bit */
     void            sureWrite( const QByteArray &response );
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 private:
     void                stopTimers();
     QTimer              *connectTimeoutTimer;
@@ -124,15 +108,9 @@ private:
     если работает дольше, чем указали при конструировании
  =======================================================================================================================
  */
-class ClientProtocolWithTimeout :
-    public ClientProtocol
+class ClientProtocolWithTimeout : public ClientProtocol
 {
     Q_OBJECT
-
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 public:
     ClientProtocolWithTimeout( QTcpSocket *parent, const int _protocolTimeout, const QString &dstHost= QString::null,
                                const quint16 dstPort= 0 );
@@ -147,10 +125,6 @@ public:
     /* restart timer, if protocolStated */
     void    slotReadyRead();
 
-/*
- -----------------------------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------------------------------
- */
 protected:
     void    protocolStop();
     void    protocolStart();

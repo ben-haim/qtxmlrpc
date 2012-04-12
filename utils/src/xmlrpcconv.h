@@ -1,10 +1,12 @@
 #ifndef XMLRPCCONV_H
-    #define XMLRPCCONV_H
-    #include <QByteArray>
-    #include <QList>
-    #include <QVariant>
-    #include <QHttpResponseHeader>
-    #include <QDomElement>
+#define XMLRPCCONV_H
+
+#include <QByteArray>
+#include <QList>
+#include <QVariant>
+#include <QHttpResponseHeader>
+#include <QDomElement>
+
 QByteArray          toXmlRpcRequest( const QString m, const QList<QVariant> &l );
 QVariant            fromXmlRpcResponse( const QString d, QString &err );
 
@@ -26,4 +28,5 @@ void                toXmlRpcArray( const int spaces, const QVariantList &child, 
 QVariant            parseXmlRpcValue( const QDomElement &e, QString &err );
 QVariant            parseXmlRpcStruct( const QDomElement &e, QString &err );
 QVariant            parseXmlRpcArray( const QDomElement &e, QString &err );
+
 #endif

@@ -9,6 +9,7 @@
 #include <QFile>
 #include "xmlrpcserver.h"
 #include "xmlrpcconv.h"
+
 #ifndef QT_NO_OPENSSL
 SslParams::SslParams ( const QString &certFile, const QString &keyFile, QObject *parent ) :
     QObject( parent )
@@ -24,6 +25,7 @@ SslParams::SslParams ( const QString &certFile, const QString &keyFile, QObject 
     fk.close();
 }
 #endif
+
 Protocol::Protocol( QAbstractSocket *parent, const int _timeout ) :
     QObject( parent ),
     timeout( 0 ),
@@ -157,8 +159,8 @@ void Protocol::__slotBytesWritten( qint64  bytes  )
     }
  =======================================================================================================================
  */
-HttpServer::HttpServer( QAbstractSocket *parent ) :
-    Protocol( parent, defaultTimeout ),
+HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
+    Protocol( parent, _timeout ),
     state( ReadingHeader )
 {
     #ifdef DEBUG_XMLRPC
@@ -168,16 +170,17 @@ HttpServer::HttpServer( QAbstractSocket *parent ) :
     connect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( slotBytesWritten( qint64)) );
     #ifndef QT_NO_OPENSSL
     if ( socket->inherits( "QSslSocket") )
-      {
-        QSslSocket  *sslServer= qobject_cast < QSslSocket * > ( socket );
-        sslServer->startServerEncryption();
-      } else
-      {
-        if ( socket->bytesAvailable() > 0 )
-          {
-            slotReadyRead();
-          }
-      }
+        {
+            QSslSocket  *sslServer= qobject_cast < QSslSocket * > ( socket );
+            sslServer->startServerEncryption();
+        }
+    else
+        {
+            if ( socket->bytesAvailable() > 0 )
+                {
+                    slotReadyRead();
+                }
+        }
 
     #else
     if ( socket->bytesAvailable() > 0 )
@@ -268,14 +271,16 @@ bool HttpServer::readRequestHeader()
     #endif
 
     /* code from qhttp.cpp */
-    bool        end= false;
+    bool        end = false;
     QByteArray  tmp;
     QByteArray rn( "\r\n", 2 ), n( "\n", 1 );
     while ( !end && socket->canReadLine() )
       {
-        tmp= socket->readLine();
-        if ( tmp == rn || tmp == n || tmp.isEmpty() ) end= true;
-        else requestHeaderBody.append( tmp );
+        tmp = socket->readLine();
+        if ( tmp == rn || tmp == n || tmp.isEmpty() )
+            end = true;
+        else
+            requestHeaderBody.append( tmp );
       }
 
     if ( !end )
@@ -297,8 +302,8 @@ bool HttpServer::readRequestHeader()
         return true;
       }
 
-    qWarning()
-        << this << "readRequestHeader(): invalid requestHeader, emit parseError()" << endl << requestHeader.toString();
+    qWarning() << this << "readRequestHeader(): invalid requestHeader, emit parseError()"
+               << endl << requestHeader.toString();
 
     emit    parseError( this );
     return false;
@@ -318,8 +323,10 @@ bool HttpServer::readRequestBody()
     qDebug() << this << "readRequestBody(): already read" << requestBody.size()
         << "contentLength" << requestHeader.contentLength();
     #endif
-    if ( requestBody.size() == ( int ) requestHeader.contentLength() ) return true;
-    else return false;
+    if ( requestBody.size() == ( int ) requestHeader.contentLength() )
+        return true;
+    else
+        return false;
 }
 
 bool HttpServer::requestContainsBody()
@@ -336,13 +343,12 @@ void HttpServer::slotBytesWritten( qint64 bytes )
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "slotBytesWritten():" << bytes;
     #endif
-    bytesWritten+= bytes;
+    bytesWritten += bytes;
     if ( bytesWritten == bytesToWrite )
-      {
-        state= Done;
-
-        emit    replySent( this );
-      }
+        {
+            state= Done;
+            emit    replySent( this );
+        }
 }
 
 void HttpServer::slotSendReply( const QByteArray &body )
@@ -351,7 +357,7 @@ void HttpServer::slotSendReply( const QByteArray &body )
     qDebug() << this << "sendReply():" << body;
     #endif
     Q_ASSERT( state == WaitingReply );
-    state= SendingReply;
+    state = SendingReply;
 
     /*
      * QByteArray body = toXmlRpcResponse( e );
@@ -375,9 +381,9 @@ void HttpServer::slotSendReply( const QVariant &e )
 
     QByteArray          body= toXmlRpcResponse( e );
     QHttpResponseHeader h( xmlRpcResponseHeader( body.size()) );
-    QByteArray          hb= h.toString().toLatin1();
-    bytesToWrite= hb.size() + body.size();
-    bytesWritten= 0;
+    QByteArray          hb = h.toString().toLatin1();
+    bytesToWrite = hb.size() + body.size();
+    bytesWritten = 0;
     socket->write( hb );
     socket->write( body );
     socket->flush();
@@ -401,29 +407,30 @@ void XmlRpcServer::incomingConnection( int socketDescriptor )
     qDebug() << this << "new incoming connection";
     #endif
 
-    QAbstractSocket *s= NULL;
+    QAbstractSocket *s = NULL;
     #ifndef QT_NO_OPENSSL
     if ( sslParams != NULL && !sslParams->certificate.isNull() )
-      {
-        s= new QSslSocket( this );
-        s->setSocketDescriptor( socketDescriptor );
-        ( ( QSslSocket * ) s )->setLocalCertificate( sslParams->certificate );
-        ( ( QSslSocket * ) s )->setPrivateKey( sslParams->privateKey );
-        ( ( QSslSocket * ) s )->setCaCertificates( sslParams->ca );
-      } else
-      {
-        s= new QTcpSocket( this );
-        s->setSocketDescriptor( socketDescriptor );
-      }
+        {
+            s = new QSslSocket( this );
+            s->setSocketDescriptor( socketDescriptor );
+            ( ( QSslSocket * ) s )->setLocalCertificate( sslParams->certificate );
+            ( ( QSslSocket * ) s )->setPrivateKey( sslParams->privateKey );
+            ( ( QSslSocket * ) s )->setCaCertificates( sslParams->ca );
+        }
+    else
+        {
+            s = new QTcpSocket( this );
+            s->setSocketDescriptor( socketDescriptor );
+        }
 
     #else
-    s= new QTcpSocket( this );
+    s = new QTcpSocket( this );
     s->setSocketDescriptor( socketDescriptor );
     #endif
     Q_ASSERT( s->state() == QAbstractSocket::ConnectedState );
     connect( s, SIGNAL( disconnected()), this, SLOT( slotSocketDisconnected()) );
 
-    HttpServer  *p= new HttpServer( s );
+    HttpServer * p = new HttpServer( s );
     connect( p, SIGNAL( protocolTimeout ( Protocol * )), this, SLOT( slotProtocolTimeout ( Protocol * )) );
     connect( p, SIGNAL( parseError ( HttpServer * )), this, SLOT( slotParseError ( HttpServer * )) );
     connect( p, SIGNAL( requestReceived( HttpServer *, const QHttpRequestHeader &, const QByteArray &)), this,
@@ -446,8 +453,9 @@ void XmlRpcServer::slotProtocolTimeout( Protocol *p )
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "slotProtocolTimeout()";
     #endif
-    qWarning() << this << "slotProtocolTimeout(): client" << p->getSocket()->peerAddress() << ":" << p->getSocket()
-        ->peerPort() << "closing connection";
+    qWarning() << this << "slotProtocolTimeout(): client"
+               << p->getSocket()->peerAddress() << ":"
+               << p->getSocket()->peerPort() << "closing connection";
     p->getSocket()->close();
 }
 
@@ -456,8 +464,10 @@ void XmlRpcServer::slotParseError( HttpServer *p )
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "slotParseError()";
     #endif
-    qWarning() << this << "slotParseError(): client" << p->getSocket()->peerAddress() << ":" << p->getSocket()->peerPort()
-        << "closing connection";
+    qWarning() << this << "slotParseError(): client"
+               << p->getSocket()->peerAddress() << ":"
+               << p->getSocket()->peerPort()
+               << "closing connection";
     p->getSocket()->close();
 }
 
@@ -679,7 +689,8 @@ void XmlRpcServer::slotRequestReceived( HttpServer *p, const QHttpRequestHeader 
                                             params.size() > 7 ? Q_ARG( QVariant, params[7]) : QGenericArgument(),
                                             params.size() > 8 ? Q_ARG( QVariant, params[8]) : QGenericArgument(),
                                             params.size() > 9 ? Q_ARG( QVariant, params[9]) : QGenericArgument() );
-      } else
+      }
+    else
       {
         invoked= QMetaObject::invokeMethod( md.first, methodName.constData(), Qt::DirectConnection,
                                             Q_RETURN_ARG( QVariant, retVal),
