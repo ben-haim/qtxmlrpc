@@ -14,10 +14,9 @@
 #include <QSslCertificate>
 #include <QSslKey>
 
-/*
- * #define DEBUG_XMLRPC ;
- * use spaces in xmlrpc formattin
- */
+
+//#define DEBUG_XMLRPC
+//use spaces in xmlrpc formattin
 #define XMLRPC_WITHSPACES
 
 /*

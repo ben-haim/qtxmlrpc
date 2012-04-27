@@ -54,20 +54,20 @@ void MainWindow::test_2()
 
     qDebug()<<"MainWindow::test_2()";
     QVariant param = QVariant(QDateTime::currentDateTime());
-    client_->execute( "echo", QVariantList() << param );
-    param = QVariant(QDateTime::currentDateTime());
-    client_->execute( "echo", QVariantList() << param );
-    param = QVariant(QDateTime::currentDateTime());
-    client_->execute( "echo", QVariantList() << param );
-    param = QVariant(QDateTime::currentDateTime());
-    client_->execute( "echo", QVariantList() << param );
-    param = QVariant(QDateTime::currentDateTime());
-    client_->execute( "echo", QVariantList() << param );
+    client_->execute( "echo", QVariantList() << param);
+//    param = QVariant("Hello ");
+//    client_->execute( "echo", QVariantList() << param );
+//    param = QVariant(" world !");
+//    client_->execute( "echo", QVariantList() << param );
+//    param = QVariant(QDateTime::currentDateTime());
+//    client_->execute( "echo", QVariantList() << param );
+//    param = QVariant(QDateTime::currentDateTime());
+//    client_->execute( "echo", QVariantList() << param );
 }
 
 void MainWindow::test_3()
 {
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0; i < 1000; ++i)
         {
             QVariant param = QVariant(QString("Qt XML-RPC TEST 3 - %1").arg(i));
 
@@ -96,7 +96,7 @@ void MainWindow::onDataReady ( const QVariant &response )
 
 void MainWindow::onEcho( const QVariant &response )
 {
-    qDebug() <<"Echo : "<< response;
+    qDebug() <<"=========================================== Echo : "<< response;
 }
 
 void MainWindow::onError( const QString &errTxt )

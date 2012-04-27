@@ -10,7 +10,7 @@
 #include <QtCore/QPointer>  /* alex312@meta.ua 23.11.10 */
 
 
-//    #define DEBUG_PROTOCOL
+//#define DEBUG_PROTOCOL
 
 class Client_ :  public QObject
 {

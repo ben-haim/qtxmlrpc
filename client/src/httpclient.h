@@ -9,11 +9,12 @@
 #include <QList>
 #include <QByteArray>
 #include <QHttpResponseHeader>
+#include <QHttpRequestHeader>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
-   // #define HTTP_CLIENT_DEBUG ;
-   // #define TRACE_HTTP
+//#define HTTP_CLIENT_DEBUG ;
+//#define TRACE_HTTP
 
 class HttpClient :
     public Client_
@@ -22,7 +23,8 @@ class HttpClient :
 
 public:
     enum HttpMethod { GET, POST };
-    HttpClient( const QString &host, const quint16 port= 80, const QString &path= "/", const HttpMethod method= GET );
+    HttpClient( const QString &host, const quint16 port= 80,
+                const QString &path= "/", const HttpMethod method= GET );
     ~HttpClient();
     inline void setPostData( const QByteArray &ba )     { postData = ba; }
     inline void setReferer( const QString &value )      { referer = value; }

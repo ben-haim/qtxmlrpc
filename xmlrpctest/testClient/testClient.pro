@@ -29,7 +29,7 @@ CONFIG += console
 else {
 OBJECTS_DIR = build/release
 MOC_DIR = build/release
-TARGET = testClientd
+TARGET = testClient
 }
 
 CONFIG(debug, debug|release) {
