@@ -249,6 +249,15 @@ void toXmlRpcValue( const int spaces, const QVariant &child, QByteArray &b )
             #endif
             b.append( "<value><double>" + QString::number( child.toDouble()) + "</double></value>" );
             break;
+        case QVariant::Date:
+            #ifdef XMLRPC_WITHSPACES
+            b.append( '\n' );
+            b.append( QByteArray( spaces, ' ') );
+            #endif
+            b.append( "<value><date.iso8601>" + child.toDate().toString( "yyyyMMdd") +
+                      "</date.iso8601></value>" );
+            break;
+
         case QVariant::DateTime:
             #ifdef XMLRPC_WITHSPACES
             b.append( '\n' );
@@ -332,6 +341,7 @@ QVariant parseXmlRpcValue( const QDomElement &e, QString &err )
         v= t.firstChild().toText().data().toDouble( &ok );
         if ( !ok ) err= "Can't convert int text '" + t.firstChild().toText().data() + "' to number";
       } else if ( type == "dateTime.iso8601" ) v= QDateTime::fromString( t.firstChild().toText().data(), "yyyyMMddTHH:mm:ss" );
+    else if ( type == "date.iso8601" ) v= QDate::fromString( t.firstChild().toText().data(), "yyyyMMdd" );
     else if ( type == "base64" )
         v= QByteArray::fromBase64( t.firstChild().toText().data().toLatin1() );
     else if ( type == "array" )
