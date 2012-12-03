@@ -214,6 +214,13 @@ void toXmlRpcValue( const int spaces, const QVariant &child, QByteArray &b )
     #endif
     switch ( child.type() )
         {
+        case QVariant::LongLong:
+            #ifdef XMLRPC_WITHSPACES
+            b.append( '\n' );
+            b.append( QByteArray( spaces, ' ') );
+            #endif
+            b.append( "<value><longlong>" + QString::number( child.toLongLong()) + "</longlong></value>" );
+            break;
         case QVariant::ULongLong:
             #ifdef XMLRPC_WITHSPACES
             b.append( '\n' );
@@ -248,6 +255,14 @@ void toXmlRpcValue( const int spaces, const QVariant &child, QByteArray &b )
             b.append( QByteArray( spaces, ' ') );
             #endif
             b.append( "<value><double>" + QString::number( child.toDouble()) + "</double></value>" );
+            break;
+        case QVariant::Time:
+            #ifdef XMLRPC_WITHSPACES
+            b.append( '\n' );
+            b.append( QByteArray( spaces, ' ') );
+            #endif
+            b.append( "<value><time.iso8601>" + child.toTime().toString( "HH:mm:ss") +
+                      "</time.iso8601></value>" );
             break;
         case QVariant::Date:
             #ifdef XMLRPC_WITHSPACES
@@ -327,6 +342,12 @@ QVariant parseXmlRpcValue( const QDomElement &e, QString &err )
         v= t.firstChild().toText().data().toInt( &ok );
         if ( !ok ) err= "Can't convert int text '" + t.firstChild().toText().data() + "' to number";
       }
+    else if ( type == "longlong")
+      {
+        bool    ok;
+        v= t.firstChild().toText().data().toLongLong( &ok );
+        if ( !ok ) err= "Can't convert longlong text '" + t.firstChild().toText().data() + "' to number";
+      }
     else if ( type == "ulonglong")
       {
         bool    ok;
@@ -342,6 +363,7 @@ QVariant parseXmlRpcValue( const QDomElement &e, QString &err )
         if ( !ok ) err= "Can't convert int text '" + t.firstChild().toText().data() + "' to number";
       } else if ( type == "dateTime.iso8601" ) v= QDateTime::fromString( t.firstChild().toText().data(), "yyyyMMddTHH:mm:ss" );
     else if ( type == "date.iso8601" ) v= QDate::fromString( t.firstChild().toText().data(), "yyyyMMdd" );
+    else if ( type == "time.iso8601" ) v= QTime::fromString( t.firstChild().toText().data(), "HH:mm:ss" );
     else if ( type == "base64" )
         v= QByteArray::fromBase64( t.firstChild().toText().data().toLatin1() );
     else if ( type == "array" )
