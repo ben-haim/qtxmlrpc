@@ -314,6 +314,13 @@ void toXmlRpcValue( const int spaces, const QVariant &child, QByteArray &b )
             #endif
             b.append( "</struct></value>" );
             break;
+    case QVariant::Invalid:
+            #ifdef XMLRPC_WITHSPACES
+            b.append( '\n' );
+            b.append( QByteArray( spaces, ' ') );
+            #endif
+            b.append("<value><invalid/></value>");
+            break;
         default:
             qCritical() << "toXmlRpcValue(): unknown return xmlrpc type" << child.typeName() << endl << child;
             qFatal( "programming error" );
@@ -370,6 +377,8 @@ QVariant parseXmlRpcValue( const QDomElement &e, QString &err )
         v= parseXmlRpcArray( t.firstChild().toElement(), err );
     else if ( type == "struct" )
         v= parseXmlRpcStruct( t.firstChild().toElement(), err );
+    else if (type == "invalid" )
+        v= QVariant();
     else if ( type.length() == 0 )
         v= e.toElement().firstChild().toText().data();
     else err= "unknown type: '" + type + "'";
