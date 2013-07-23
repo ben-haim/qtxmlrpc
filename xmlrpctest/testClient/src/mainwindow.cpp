@@ -31,7 +31,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::test_1()
 {
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0; i < 12; ++i)
         {
             ready_ = false;
 
@@ -67,7 +67,7 @@ void MainWindow::test_2()
 
 void MainWindow::test_3()
 {
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0; i < 12; ++i)
         {
             QVariant param = QVariant(QString("Qt XML-RPC TEST 3 - %1").arg(i));
 
@@ -101,7 +101,7 @@ void MainWindow::onEcho( const QVariant &response )
 
 void MainWindow::onError( const QString &errTxt )
 {
-    qDebug() << errTxt;
+    qWarning() << errTxt;
     ready_ = true;
 }
 

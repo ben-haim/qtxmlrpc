@@ -34,4 +34,24 @@ QVariant TServer::testFunc( const QVariant &param )
     return param;
 }
 
+QVariant TServer::echo(const QVariant& e)
+{
+    std::cout <<
+        QTime::currentTime().toString().toStdString() <<
+        " echo: " <<
+        e.toString().toStdString() <<
+        std::endl;
+    return e;
+}
+
+DeferredResult*TServer::deferredEcho(const QVariant& e)
+{
+    std::cout <<
+        QTime::currentTime().toString().toStdString() <<
+        " deferredEcho: " <<
+        e.toString().toStdString() <<
+        std::endl;
+    return new DeferredEcho( e );
+}
+
 #include "moc_test_server.cpp"

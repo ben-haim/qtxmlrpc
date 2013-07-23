@@ -17,8 +17,8 @@ public:
     ~   TServer();
 private slots :
     QVariant testFunc ( const QVariant &param );
-    QVariant echo( const QVariant& e ) { return e; }
-    DeferredResult * deferredEcho( const QVariant& e ) { return new DeferredEcho( e ); }
+    QVariant echo( const QVariant& e );
+    DeferredResult * deferredEcho( const QVariant& e );
 
 /*
  -----------------------------------------------------------------------------------------------------------------------
