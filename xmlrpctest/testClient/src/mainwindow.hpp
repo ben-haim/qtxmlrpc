@@ -5,7 +5,7 @@
 
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 
 QT_FORWARD_DECLARE_CLASS(XmlRpcClient)
 

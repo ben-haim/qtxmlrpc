@@ -278,7 +278,8 @@ bool HttpServer::readRequestHeader()
         return false;
       }
 
-    requestHeader= QHttpRequestHeader( requestHeaderBody );
+    //requestHeader= QHttpRequestHeader( requestHeaderBody );
+    requestHeader = HttpRequestHeader( requestHeaderBody );
     requestHeaderBody.clear();
     requestBody.clear();
     if ( requestHeader.isValid() )
@@ -542,7 +543,9 @@ void XmlRpcServer::slotReceiverDestroed( QObject *o )
     #endif
 }
 
-void XmlRpcServer::slotRequestReceived( HttpServer *p, const QHttpRequestHeader &h, const QByteArray &body )
+void XmlRpcServer::slotRequestReceived(HttpServer *p,
+                                       const HttpRequestHeader& h,
+                                       const QByteArray &body )
 {
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "slotRequestReceived():" << p << h.toString() << body;
@@ -650,7 +653,12 @@ void XmlRpcServer::slotRequestReceived( HttpServer *p, const QHttpRequestHeader 
     if ( s->inherits( "QSslSocket") )
       {
         QSslSocket  *sslSkt= qobject_cast < QSslSocket * > ( s );
-        QString     commonName= sslSkt->peerCertificate().subjectInfo( QSslCertificate::CommonName );
+        #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+        QString     commonName = sslSkt->peerCertificate().subjectInfo( QSslCertificate::CommonName );
+        #else
+        QString     commonName = sslSkt->peerCertificate()
+                                        .subjectInfo( QSslCertificate::CommonName ).join(",");
+        #endif
         params.append( commonName );
       }
     #endif

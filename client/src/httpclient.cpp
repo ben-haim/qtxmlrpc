@@ -88,9 +88,11 @@ void HttpClient::protocolStart()
 
     QString path= url.path();
     if ( path.isEmpty() ) path= "/";
-    if ( method == GET && url.hasQuery() ) path+= "?" + url.encodedQuery();
+    //FIXME: url encodeQuery
+    //if ( method == GET && url.hasQuery() ) path+= "?" + url.encodedQuery();
 
-    QHttpRequestHeader  h( method == GET ? "GET" : "POST", path );
+    //QHttpRequestHeader  h( method == GET ? "GET" : "POST", path );
+    HttpRequestHeader  h( method == GET ? "GET" : "POST", path );
     h.setValue( "Host", QUrl::toAce( url.host()) );
     h.setValue( "User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)" );
     h.setValue( "Accept", "*/*" );
@@ -143,7 +145,8 @@ bool HttpClient::readResponseHeader()
       }
 
     if ( !end ) return false;
-    responseHeader= QHttpResponseHeader( QString( responseHeaderData) );
+    //responseHeader= QHttpResponseHeader( QString( responseHeaderData) );
+    responseHeader= HttpResponseHeader( QString( responseHeaderData) );
     #ifdef TRACE_HTTP
     qDebug() << "--- response header ---" << endl << responseHeader.toString();
     #endif

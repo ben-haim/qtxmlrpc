@@ -1,5 +1,5 @@
 /* file : main.cpp created : 11.01.2012 author : Slyshyk Oleksiy (alex312@meta.ua) */
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "mainwindow.hpp"
 int main( int argc, char *argv[] )
 {
