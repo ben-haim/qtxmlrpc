@@ -156,18 +156,18 @@ QByteArray toXmlRpcResponse( const QVariant &v )
     return r;
 }
 
-QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength )
+QByteArray xmlRpcResponseHeader( const qint64 contentLength )
 {
     #ifdef DEBUG_XMLRPC
     qDebug() << "xmlRpcHeader():" << contentLength;
     #endif
+    QString s = "HTTP/1.0 200 OK \n"
+                "content-type: text/xml \n"
+                "content-length: %1 \n"
+                "connection: close \n"
+                "server: qt-xmlrpc \n\n ";
 
-    QHttpResponseHeader h( 200, "OK", 1, 0 );
-    h.setContentType( "text/xml" );
-    h.setContentLength( contentLength );
-    h.setValue( "connection", "close" );
-    h.setValue( "server", "qt-xmlrpc" );
-    return h;
+    return s.arg(contentLength).toLatin1();
 }
 
 void toXmlRpcArray( const int spaces, const QVariantList &child, QByteArray &b )

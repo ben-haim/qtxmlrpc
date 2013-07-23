@@ -11,7 +11,7 @@ QByteArray          toXmlRpcRequest( const QString m, const QList<QVariant> &l )
 QVariant            fromXmlRpcResponse( const QString d, QString &err );
 
 /* returns default http header for our xmlrpc server */
-QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength );
+QByteArray          xmlRpcResponseHeader( const qint64 contentLength );
 
 /* create xmlrpc response from QVariant */
 QByteArray          toXmlRpcResponse( const QVariant &v );

@@ -362,8 +362,7 @@ void HttpServer::slotSendReply( const QByteArray &body )
     /*
      * QByteArray body = toXmlRpcResponse( e );
      */
-    QHttpResponseHeader h( xmlRpcResponseHeader( body.size()) );
-    QByteArray          hb= h.toString().toLatin1();
+    QByteArray          hb = xmlRpcResponseHeader( body.size());
     bytesToWrite= hb.size() + body.size();
     bytesWritten= 0;
     socket->write( hb );
@@ -380,8 +379,7 @@ void HttpServer::slotSendReply( const QVariant &e )
     state= SendingReply;
 
     QByteArray          body= toXmlRpcResponse( e );
-    QHttpResponseHeader h( xmlRpcResponseHeader( body.size()) );
-    QByteArray          hb = h.toString().toLatin1();
+    QByteArray          hb = xmlRpcResponseHeader( body.size());
     bytesToWrite = hb.size() + body.size();
     bytesWritten = 0;
     socket->write( hb );
