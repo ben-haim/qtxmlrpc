@@ -4,7 +4,13 @@
 TEMPLATE = lib
 CONFIG += staticlib
 QT = core xml network
-DESTDIR = ./lib
+
+greaterThan(QT_MAJOR_VERSION, 4){
+DESTDIR = ../libq5
+}
+else {
+DESTDIR = ../lib
+}
 
 #DEFINES += QT_NO_OPENSSL
 
