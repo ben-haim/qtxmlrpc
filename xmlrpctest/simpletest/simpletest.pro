@@ -1,6 +1,6 @@
 
 TEMPLATE = app
-DESTDIR = bin
+DESTDIR = ../bin
 
 QT += network xml
 
@@ -9,9 +9,12 @@ INCLUDEPATH += ../../server/src
 INCLUDEPATH += ../../client/src
 INCLUDEPATH += ../../utils/src
 
-LIBS += -L../../client/lib
-LIBS += -L../../server/lib
-LIBS += -L../../utils/lib
+greaterThan(QT_MAJOR_VERSION, 4){
+LIBS += -L../../libq5
+}
+else {
+LIBS += -L../../lib
+}
 
 SOURCES += ./src/main.cpp ./src/server.cpp ./src/client.cpp
 HEADERS += ./src/server.h ./src/client.h

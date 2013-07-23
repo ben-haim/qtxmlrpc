@@ -165,7 +165,7 @@ QByteArray xmlRpcResponseHeader( const qint64 contentLength )
                 "content-type: text/xml \n"
                 "content-length: %1 \n"
                 "connection: close \n"
-                "server: qt-xmlrpc \n\n ";
+                "server: qt-xmlrpc \n\r\n ";
 
     return s.arg(contentLength).toLatin1();
 }

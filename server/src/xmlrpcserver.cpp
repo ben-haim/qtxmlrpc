@@ -146,19 +146,6 @@ void Protocol::__slotBytesWritten( qint64  bytes  )
     restartProtocolTimeoutTimer();
 }
 
-/*
- =======================================================================================================================
-    static QHttpResponseHeader xmlRpcResponseHeader( const qint64 contentLength ) { #ifdef DEBUG_XMLRPC qDebug() <<
-    "xmlRpcHeader():" << contentLength;
-    #endif QHttpResponseHeader h( 200, "OK", 1, 0 );
-    h.setContentType( "text/xml" );
-    h.setContentLength( contentLength );
-    h.setValue( "connection", "close" );
-    h.setValue( "server", "qt-xmlrpc" );
-    return h;
-    }
- =======================================================================================================================
- */
 HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
     Protocol( parent, _timeout ),
     state( ReadingHeader )

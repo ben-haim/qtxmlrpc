@@ -4,7 +4,6 @@
 #include <QByteArray>
 #include <QList>
 #include <QVariant>
-#include <QHttpResponseHeader>
 #include <QDomElement>
 
 QByteArray          toXmlRpcRequest( const QString m, const QList<QVariant> &l );
