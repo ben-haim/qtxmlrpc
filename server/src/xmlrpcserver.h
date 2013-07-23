@@ -8,7 +8,8 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
-#include <QHttpHeader>
+//#include <QHttpHeader>
+#include <httpheader.hpp>
 
 /* ssl */
 #include <QSslCertificate>
@@ -76,7 +77,8 @@ protected:
 };
 
 /* very basic HttpServer for XmlRpc */
-class   QHttpRequestHeader;
+//class   QHttpRequestHeader;
+class   HttpRequestHeader;
 
 class HttpServer : public Protocol
 {
@@ -93,7 +95,12 @@ protected slots :
     void    slotBytesWritten( qint64 bytes );
 signals:
     void    parseError( HttpServer * );
-    void    requestReceived( HttpServer *, const QHttpRequestHeader &h, const QByteArray &body );
+//    void    requestReceived( HttpServer *,
+//                             const QHttpRequestHeader &h,
+//                             const QByteArray &body );
+    void    requestReceived( HttpServer *,
+                             const HttpRequestHeader &h,
+                             const QByteArray &body );
     void    replySent( HttpServer * );
 
 private:
@@ -103,7 +110,8 @@ private:
     enum State { ReadingHeader, ReadingBody, WaitingReply, SendingReply, Done } state;
     QString requestHeaderBody;
     QByteArray requestBody;
-    QHttpRequestHeader requestHeader;
+    //QHttpRequestHeader requestHeader;
+    HttpRequestHeader requestHeader;
     qint64 bytesWritten;
     qint64 bytesToWrite;
     //const static int defaultTimeout = 100000;    /* 100 secs */
@@ -186,7 +194,12 @@ private slots :
     void    slotParseError( HttpServer * );
 
     /* when HttpServer receives request */
-    void    slotRequestReceived( HttpServer *, const QHttpRequestHeader &h, const QByteArray &body );
+//    void    slotRequestReceived( HttpServer *,
+//                                 const QHttpRequestHeader &h,
+//                                 const QByteArray &body );
+    void    slotRequestReceived( HttpServer *,
+                                 const HttpRequestHeader &h,
+                                 const QByteArray &body );
 
     /* when reply sent */
     void    slotReplySent( HttpServer * );

@@ -8,7 +8,8 @@
 #include <QMap>
 #include <QList>
 #include <QByteArray>
-#include <QHttpResponseHeader>
+//#include <QHttpResponseHeader>
+#include <httpheader.hpp>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
@@ -48,7 +49,8 @@ private:
     QByteArray postData;
     QString referer;
     QNetworkCookieJar cookieJar;
-    QHttpResponseHeader responseHeader;
+    //QHttpResponseHeader responseHeader;
+    HttpResponseHeader responseHeader;
     QByteArray responseHeaderData;
     QByteArray responseBodyData;
     qint64 chunkedSize;
