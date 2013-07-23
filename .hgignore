@@ -20,3 +20,9 @@ ui*.h
 *.so
 Makefile*
 
+xmlrpctest/bin/simpletest
+xmlrpctest/bin/simpletestd
+xmlrpctest/bin/testClient
+xmlrpctest/bin/testClientd
+xmlrpctest/bin/testsrv
+xmlrpctest/bin/testsrvd
