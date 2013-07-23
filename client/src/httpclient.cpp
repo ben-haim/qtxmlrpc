@@ -88,8 +88,12 @@ void HttpClient::protocolStart()
 
     QString path= url.path();
     if ( path.isEmpty() ) path= "/";
-    //FIXME: url encodeQuery
-    //if ( method == GET && url.hasQuery() ) path+= "?" + url.encodedQuery();
+    #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+    if ( method == GET && url.hasQuery() ) path+= "?" + url.encodedQuery();
+    #else
+    if ( method == GET && url.hasQuery() ) path+= "?" + url.query();
+    #endif
+
 
     //QHttpRequestHeader  h( method == GET ? "GET" : "POST", path );
     HttpRequestHeader  h( method == GET ? "GET" : "POST", path );
