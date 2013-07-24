@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include "xmlrpcconv.h"
+#include "httpheader.hpp"
 
 #define XMLRPC_WITHSPACES
 
@@ -161,13 +162,13 @@ QByteArray xmlRpcResponseHeader( const qint64 contentLength )
     #ifdef DEBUG_XMLRPC
     qDebug() << "xmlRpcHeader():" << contentLength;
     #endif
-    QString s = "HTTP/1.0 200 OK \n"
-                "content-type: text/xml \n"
-                "content-length: %1 \n"
-                "connection: close \n"
-                "server: qt-xmlrpc \n\n ";
+    HttpResponseHeader h( 200, "OK", 1, 0 );
+    h.setContentType( "text/xml" );
+    h.setContentLength( contentLength );
+    h.setValue( "connection", "close" );
+    h.setValue( "server", "qt-xmlrpc" );
 
-    return s.arg(contentLength).toLatin1();
+    return h.toString().toLatin1();
 }
 
 void toXmlRpcArray( const int spaces, const QVariantList &child, QByteArray &b )
