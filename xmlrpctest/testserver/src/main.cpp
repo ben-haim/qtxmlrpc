@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 #include "test_server.h"
-#include <iostream>
+
 int main( int argc, char **argv )
 {
     QCoreApplication    app( argc, argv );

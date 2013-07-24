@@ -14,6 +14,8 @@ MainWindow::MainWindow( QWidget *parent ) :
 {
     ui->setupUi( this );
 
+    connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
+
     connect( ui->test_1_btn, SIGNAL(clicked()), this, SLOT(test_1()) );
     connect( ui->test_2_btn, SIGNAL(clicked()), this, SLOT(test_2()) );
     connect( ui->test_3_btn, SIGNAL(clicked()), this, SLOT(test_3()) );

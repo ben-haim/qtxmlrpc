@@ -1,9 +1,10 @@
 
-
 #include <iostream>
 #include "test_server.h"
 #include <QHostAddress>
 #include <QTime>
+
+
 TServer::TServer ( const QString &address, quint16 port, QObject *parent ) :
     QObject( parent )
 {
@@ -17,6 +18,7 @@ TServer::TServer ( const QString &address, quint16 port, QObject *parent ) :
         << " Start XML-RPC server. " << "Adress:" <<
         QHostAddress( address ).toString().toStdString()
         << " Port:" << port << std::endl;
+        std::cout<<"Server build with Qt "<<QT_VERSION_STR<<std::endl;
       }
 }
 TServer::~TServer()
