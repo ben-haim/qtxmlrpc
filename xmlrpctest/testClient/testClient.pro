@@ -11,6 +11,7 @@ QT += network xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 UI_HEADERS_DIR = build
+UI_DIR         = build
 
 
 INCLUDEPATH += ../../server/src
@@ -52,3 +53,6 @@ SOURCES += ./src/main.cpp\
 HEADERS  += ./src/mainwindow.hpp
 
 FORMS    += ./src/mainwindow.ui
+
+RESOURCES += \
+    app_res.qrc

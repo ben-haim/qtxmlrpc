@@ -19,6 +19,8 @@ int main( int argc, char **argv )
     QCoreApplication    app( argc, argv );
     QTimer::singleShot( 4000, &app, SLOT( quit()) );
 
+    std::cout<<"Test build with Qt "<<QT_VERSION_STR<<std::endl;
+
     QString address= "127.0.0.1";
     quint16 port= 8080;
     TServer s( address, port );
