@@ -8,6 +8,7 @@
 #include <QVariant>
 #include <QByteArray>
 #include <QVariantList>
+
 class XmlRpcClient :
     public HttpClient
 {

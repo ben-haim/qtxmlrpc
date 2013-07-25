@@ -2,6 +2,8 @@
 
 #include "clientprotocol.h"
 #include <QTcpSocket>
+#include <QDateTime>
+
 Client_::Client_ ( const QString &dstHost, const quint16 dstPort ) :
     dstHost( dstHost ),
     dstPort( dstPort ),
@@ -14,12 +16,15 @@ Client_::Client_ ( const QString &dstHost, const quint16 dstPort ) :
     << this << "Protocol(...)";
     #endif
     connectTimeoutTimer= new QTimer( this );
+    connectTimeoutTimer->setInterval(connectTimeout);
     connectTimeoutTimer->setSingleShot( true );
     connect( connectTimeoutTimer, SIGNAL(timeout()), SLOT(onConnectTimeout()) );
     reconnectSleepTimer= new QTimer( this );
     reconnectSleepTimer->setSingleShot( true );
+    reconnectSleepTimer->setInterval(reconnectSleep);
     connect( reconnectSleepTimer, SIGNAL(timeout()), SLOT(deferredStart()) );
 }
+
 Client_::~Client_()
 {
     #ifdef DEBUG_PROTOCOL
@@ -42,7 +47,7 @@ QAbstractSocket *Client_::buildSocket()
 void Client_::deferredStart()
 {
     #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "deferredStart()";
+    qDebug()<<QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << this << "deferredStart()";
     #endif
     //if ( protocolRetry == 0 )
     if( socket.isNull() )
@@ -70,7 +75,7 @@ void Client_::deferredStart()
         default:
                 //emitError( "Unexpected socet state." );
                 #ifdef DEBUG_PROTOCOL
-                qDebug() << this << "Unexpected socet state.";
+                qDebug() << this << "Unexpected socet state."<<socket->state();
                 #endif
             break;
         }
