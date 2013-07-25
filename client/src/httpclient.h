@@ -8,13 +8,12 @@
 #include <QMap>
 #include <QList>
 #include <QByteArray>
-//#include <QHttpResponseHeader>
 #include <httpheader.hpp>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
-   // #define HTTP_CLIENT_DEBUG ;
-   // #define TRACE_HTTP
+// #define HTTP_CLIENT_DEBUG ;
+// #define TRACE_HTTP
 
 class HttpClient :
     public Client_
@@ -49,7 +48,6 @@ private:
     QByteArray postData;
     QString referer;
     QNetworkCookieJar cookieJar;
-    //QHttpResponseHeader responseHeader;
     HttpResponseHeader responseHeader;
     QByteArray responseHeaderData;
     QByteArray responseBodyData;

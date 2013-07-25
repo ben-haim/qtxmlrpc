@@ -8,7 +8,6 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
-//#include <QHttpHeader>
 #include <httpheader.hpp>
 
 /* ssl */
@@ -77,7 +76,6 @@ protected:
 };
 
 /* very basic HttpServer for XmlRpc */
-//class   QHttpRequestHeader;
 class   HttpRequestHeader;
 
 class HttpServer : public Protocol
@@ -95,9 +93,6 @@ protected slots :
     void    slotBytesWritten( qint64 bytes );
 signals:
     void    parseError( HttpServer * );
-//    void    requestReceived( HttpServer *,
-//                             const QHttpRequestHeader &h,
-//                             const QByteArray &body );
     void    requestReceived( HttpServer *,
                              const HttpRequestHeader &h,
                              const QByteArray &body );
@@ -110,7 +105,6 @@ private:
     enum State { ReadingHeader, ReadingBody, WaitingReply, SendingReply, Done } state;
     QString requestHeaderBody;
     QByteArray requestBody;
-    //QHttpRequestHeader requestHeader;
     HttpRequestHeader requestHeader;
     qint64 bytesWritten;
     qint64 bytesToWrite;
