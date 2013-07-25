@@ -350,9 +350,9 @@ void HttpServer::slotSendReply( const QByteArray &body )
     /*
      * QByteArray body = toXmlRpcResponse( e );
      */
-    QByteArray          hb = xmlRpcResponseHeader( body.size());
-    bytesToWrite= hb.size() + body.size();
-    bytesWritten= 0;
+    QByteArray hb = xmlRpcResponseHeader( body.size());
+    bytesToWrite  = hb.size() + body.size();
+    bytesWritten  = 0;
     socket->write( hb );
     socket->write( body );
     socket->flush();
@@ -419,8 +419,6 @@ void XmlRpcServer::incomingConnection( int socketDescriptor )
     HttpServer * p = new HttpServer( s );
     connect( p, SIGNAL( protocolTimeout ( Protocol * )), this, SLOT( slotProtocolTimeout ( Protocol * )) );
     connect( p, SIGNAL( parseError ( HttpServer * )), this, SLOT( slotParseError ( HttpServer * )) );
-//    connect( p, SIGNAL( requestReceived( HttpServer *, const QHttpRequestHeader &, const QByteArray &)), this,
-//             SLOT( slotRequestReceived( HttpServer *, const QHttpRequestHeader &, const QByteArray &)) );
     connect( p, SIGNAL( requestReceived( HttpServer *, const HttpRequestHeader &, const QByteArray &)), this,
              SLOT( slotRequestReceived( HttpServer *, const HttpRequestHeader &, const QByteArray &)) );
     connect( p, SIGNAL( replySent ( HttpServer * )), this, SLOT( slotReplySent ( HttpServer * )) );

@@ -7,7 +7,7 @@
 #include <QString>
 #include <QTimer>
 #include <QAbstractSocket>
-#include <QtCore/QPointer>  /* alex312@meta.ua 23.11.10 */
+#include <QtCore/QPointer>
 
 
 //#define DEBUG_PROTOCOL
