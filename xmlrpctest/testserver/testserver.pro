@@ -11,10 +11,20 @@ INCLUDEPATH += ../../client/src
 INCLUDEPATH += ../../utils/src
 
 greaterThan(QT_MAJOR_VERSION, 4){
-LIBS += -L../../libq5
+win32-g++{
+    LIBS+= -L../../libq5/mingw
 }
 else {
-LIBS += -L../../lib
+    LIBS+= -L../../libq5
+}#win32-g++
+}#greaterThan(QT_MAJOR_VERSION, 4)
+else {
+win32-g++{
+    LIBS+= -L../../lib/mingw
+}
+else {
+    LIBS+= -L../../lib
+}#win32-g++
 }
 
 SOURCES += ./src/main.cpp ./src/test_server.cpp

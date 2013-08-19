@@ -6,10 +6,20 @@ CONFIG += staticlib
 QT = core network xml
 
 greaterThan(QT_MAJOR_VERSION, 4){
-DESTDIR = ../libq5
+win32-g++{
+    DESTDIR = ../libq5/mingw
 }
 else {
-DESTDIR = ../lib
+    DESTDIR = ../libq5
+}#win32-g++
+}#greaterThan(QT_MAJOR_VERSION, 4)
+else {
+win32-g++{
+    DESTDIR = ../lib/mingw
+}
+else {
+    DESTDIR = ../lib
+}#win32-g++
 }
 
 INCLUDEPATH += ../utils/src
