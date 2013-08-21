@@ -55,7 +55,7 @@ inline bool isFault( const QVariant &v )
     &&  m[faultString].type() == QVariant::String;
 }
 
-QByteArray toXmlRpcRequest( const QString m, const QList<QVariant> &l )
+QByteArray toXmlRpcRequest(const QString m, const QVariantList &l )
 {
     #ifdef XMLRPC_WITHSPACES
 
