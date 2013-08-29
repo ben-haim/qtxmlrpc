@@ -27,4 +27,6 @@ QVariant            parseXmlRpcValue ( const QDomElement &e, QString &err );
 QVariant            parseXmlRpcStruct( const QDomElement &e, QString &err );
 QVariant            parseXmlRpcArray ( const QDomElement &e, QString &err );
 
+QVariantMap         getFaultCode     ( const QVariant& fc);
+
 #endif

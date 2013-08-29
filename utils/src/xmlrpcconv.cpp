@@ -441,3 +441,12 @@ QVariant parseXmlRpcArray( const QDomElement &e, QString &err )
 
     return r;
 }
+
+
+QVariantMap getFaultCode(const QVariant &fc)
+{
+    if(isFault(fc))
+        return fc.toMap();
+
+    return QVariantMap();
+}
