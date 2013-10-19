@@ -5,22 +5,7 @@ TEMPLATE = lib
 CONFIG += staticlib
 QT = core xml network
 
-greaterThan(QT_MAJOR_VERSION, 4){
-win32-g++{
-    DESTDIR = ../libq5/mingw
-}
-else {
-    DESTDIR = ../libq5
-}#win32-g++
-}#greaterThan(QT_MAJOR_VERSION, 4)
-else {
-win32-g++{
-    DESTDIR = ../lib/mingw
-}
-else {
-    DESTDIR = ../lib
-}#win32-g++
-}
+DESTDIR = ../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
 #DEFINES += QT_NO_OPENSSL
 

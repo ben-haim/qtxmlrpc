@@ -27,3 +27,4 @@ xmlrpctest/bin/testClientd
 xmlrpctest/bin/testsrv
 xmlrpctest/bin/testsrvd
 qrc_*.cpp
+*.rc

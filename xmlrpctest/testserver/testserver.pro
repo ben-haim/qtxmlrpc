@@ -10,22 +10,7 @@ INCLUDEPATH += ../../server/src
 INCLUDEPATH += ../../client/src
 INCLUDEPATH += ../../utils/src
 
-greaterThan(QT_MAJOR_VERSION, 4){
-win32-g++{
-    LIBS+= -L../../libq5/mingw
-}
-else {
-    LIBS+= -L../../libq5
-}#win32-g++
-}#greaterThan(QT_MAJOR_VERSION, 4)
-else {
-win32-g++{
-    LIBS+= -L../../lib/mingw
-}
-else {
-    LIBS+= -L../../lib
-}#win32-g++
-}
+LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
 SOURCES += ./src/main.cpp ./src/test_server.cpp
 HEADERS += ./src/test_server.h
