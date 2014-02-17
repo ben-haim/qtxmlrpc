@@ -2,8 +2,12 @@
 
 #include "httpclient.h"
 
-HttpClient::HttpClient ( const QString &host, const quint16 port, const QString &path, const HttpMethod method ) :
-    Client_( host, port ),
+HttpClient::HttpClient (const QString &host,
+                        const quint16 port,
+                        const QString &path,
+                        const HttpMethod method ,
+                        QObject* parent) :
+    Client_( host, port, parent ),
     httpState( Waiting ),
     method( method )
 {
@@ -45,7 +49,8 @@ void HttpClient::onReadyRead()
                  * это нам говорят продолжай слать пост, игнорируем, опять будем читать хидер
                  */
                 break;
-              } else if ( responseHeader.statusCode() == 302 )
+              }
+            else if ( responseHeader.statusCode() == 302 )
               {
 
                 /* Moved temporary */
@@ -98,7 +103,8 @@ void HttpClient::protocolStart()
     h.setValue( "Host", QUrl::toAce( url.host()) );
     h.setValue( "User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)" );
     h.setValue( "Accept", "*/*" );
-    if ( !referer.isEmpty() ) h.setValue( "Referer", referer );
+    if ( !referer.isEmpty() )
+        h.setValue( "Referer", referer );
 
     QList<QNetworkCookie>   cookieList= cookieJar.cookiesForUrl( url );
     foreach( QNetworkCookie nc, cookieList )
@@ -142,12 +148,12 @@ bool HttpClient::readResponseHeader()
     while ( !end && socket->canReadLine() )
       {
         tmp= socket->readLine();
-        if ( tmp == rn || tmp == n || tmp.isEmpty() ) end= true;
+        if ( tmp == rn || tmp == n || tmp.isEmpty() ) end = true;
         else responseHeaderData+= tmp;
       }
 
     if ( !end ) return false;
-    responseHeader= HttpResponseHeader( QString( responseHeaderData) );
+    responseHeader = HttpResponseHeader( QString( responseHeaderData) );
     #ifdef TRACE_HTTP
     qDebug() << "--- response header ---" << endl << responseHeader.toString();
     #endif
@@ -181,12 +187,14 @@ bool HttpClient::readResponseHeader()
 
 bool HttpClient::readResponseBody()
 {
-    if ( responseHeader.hasContentLength() ) return readContentLength();
+    if ( responseHeader.hasContentLength() )
+        return readContentLength();
     else if ( responseHeader.value( "Connection") == "close" )
       {
         responseBodyData+= socket->readAll();
         return false;
-      } else
+      }
+    else
       {
 
         /*
