@@ -3,8 +3,10 @@
 #include "client.h"
 #include "xmlrpcclient.h"
 #include <QVariantList>
-#include <QtCore/QCoreApplication>
+#include <QCoreApplication>
 #include <iostream>
+
+
 Client::Client ( const QString &address, quint16 port, QObject *parent ) :
     QObject( parent ),
     address( address ),
@@ -18,10 +20,10 @@ void Client::testFunc( const QVariant &param )
     connect( client, SIGNAL( dataReady( QVariant)), this, SLOT( onDataReady( QVariant)) );
     connect( client, SIGNAL( error ( const QString & )), this, SLOT( onError ( const QString & )) );
     client->execute( "testFunc", QVariantList() << param );
-    while ( !ready )
-      {
-        qApp->processEvents();
-      }
+//    while ( !ready )
+//      {
+//        qApp->processEvents();
+//      }
 }
 
 void Client::onDataReady( const QVariant &response )
@@ -30,9 +32,9 @@ void Client::onDataReady( const QVariant &response )
     ready= true;
     res= response;
 
-    /*
-     * std::cout<<"Client::onDataReady " << response.toString().toStdString()<<std::endl;
-     */
+
+    std::cout<<"Client::onDataReady " << response.toString().toStdString()<<std::endl;
+
 }
 
 void Client::onError( const QString &errTxt )
@@ -50,8 +52,8 @@ QVariant Client::operator   ( ) ( const QVariant &param )
     connect( client, SIGNAL(error ( const QString & )), this, SLOT(onError ( const QString & )) );
     client->execute( "testFunc", QVariantList() << param );
     while ( !ready )
-      {
-        qApp->processEvents();
-      }
+        {
+            qApp->processEvents();
+        }
     return res;
 }

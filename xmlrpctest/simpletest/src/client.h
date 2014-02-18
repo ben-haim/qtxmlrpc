@@ -10,7 +10,7 @@ class Client :
 
 public:
     Client( const QString &address, quint16 port, QObject *parent= 0 );
-    void    testFunc( const QVariant &param );
+    void     testFunc( const QVariant &param );
     QVariant operator () ( const QVariant &param );
 private slots :
     void onDataReady ( const QVariant &response );
