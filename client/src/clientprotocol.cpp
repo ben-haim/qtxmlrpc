@@ -243,12 +243,18 @@ void Client_::sureWrite( const QByteArray &response )
     while ( len )
         {
             qint64  res= socket->write( ptr, len );
-            if ( res < 0 ) break;
+            if ( res < 0 )
+                {
+                    #ifdef DEBUG_PROTOCOL
+                    qCritical() << this << socket->errorString();
+                    #endif
+                    break;
+                }
             len-= res;
             ptr+= res;
         }
 
-    socket->flush();
+    //socket->flush();
 }
 
 void Client_::stopTimers()

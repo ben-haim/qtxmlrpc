@@ -125,7 +125,8 @@ void HttpClient::protocolStart()
     QByteArray  requestHeader( h.toString().toLatin1() );
     if ( method == POST ) requestHeader.append( postData );
     #ifdef TRACE_HTTP
-    qDebug() << "--- request header ---" << endl << requestHeader;
+    qDebug() << "--- request header ---" << endl << requestHeader
+             << endl <<"--- --------- ---";
     #endif
     sureWrite( requestHeader );
     httpState= Sending;

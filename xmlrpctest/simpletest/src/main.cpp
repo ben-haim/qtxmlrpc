@@ -17,7 +17,7 @@ void sleep( int ms )
 int main( int argc, char **argv )
 {
     QCoreApplication    app( argc, argv );
-    QTimer::singleShot( 4000, &app, SLOT( quit()) );
+    QTimer::singleShot( 10000, &app, SLOT( quit()) );
 
     std::cout<<"Test build with Qt "<<QT_VERSION_STR<<std::endl;
 
@@ -44,11 +44,6 @@ int main( int argc, char **argv )
      */
     c.testFunc( QVariant( 1.5) );
 
-    /*
-     * sleep(1000);
-     */
-    QVariant    t= c( QVariant( "test as function") );
-    std::cout << t.toString().toStdString() << std::endl;
 
     QVariantMap m;
     m["one"]= 1;
