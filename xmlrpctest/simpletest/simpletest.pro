@@ -5,9 +5,9 @@ DESTDIR = ../bin
 QT += network xml
 
 
-INCLUDEPATH += ../../server/src
-INCLUDEPATH += ../../client/src
-INCLUDEPATH += ../../utils/src
+INCLUDEPATH += ../../qtxmlrpc/server
+INCLUDEPATH += ../../qtxmlrpc/client
+INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
@@ -28,12 +28,8 @@ TARGET = simpletest
 }
 
 CONFIG(debug, debug|release) {
-LIBS += -lxmlrpcclientd
-LIBS += -lxmlrpcserverd
-LIBS += -lxmlrpcutilsd
+LIBS += -lqtxmlrpcd
 }
 else {
-LIBS += -lxmlrpcclient
-LIBS += -lxmlrpcserver
-LIBS += -lxmlrpcutils
+LIBS += -lqtxmlrpc
 }

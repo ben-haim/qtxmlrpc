@@ -14,9 +14,9 @@ UI_HEADERS_DIR = build
 UI_DIR         = build
 
 
-INCLUDEPATH += ../../server/src
-INCLUDEPATH += ../../client/src
-INCLUDEPATH += ../../utils/src
+INCLUDEPATH += ../../qtxmlrpc/server
+INCLUDEPATH += ../../qtxmlrpc/client
+INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
@@ -33,12 +33,10 @@ TARGET = testClient
 }
 
 CONFIG(debug, debug|release) {
-LIBS += -lxmlrpcclientd
-LIBS += -lxmlrpcutilsd
+LIBS += -lqtxmlrpcd
 }
 else {
-LIBS += -lxmlrpcclient
-LIBS += -lxmlrpcutils
+LIBS += -lqtxmlrpc
 }
 
 

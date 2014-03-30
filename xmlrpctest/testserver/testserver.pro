@@ -6,9 +6,9 @@ QT += network xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
-INCLUDEPATH += ../../server/src
-INCLUDEPATH += ../../client/src
-INCLUDEPATH += ../../utils/src
+INCLUDEPATH += ../../qtxmlrpc/server
+INCLUDEPATH += ../../qtxmlrpc/client
+INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
@@ -29,10 +29,8 @@ TARGET = testsrv
 }
 
 CONFIG(debug, debug|release) {
-LIBS += -lxmlrpcserverd
-LIBS += -lxmlrpcutilsd
+LIBS += -lqtxmlrpcd
 }
 else {
-LIBS += -lxmlrpcserver
-LIBS += -lxmlrpcutils
+LIBS += -lqtxmlrpc
 }
