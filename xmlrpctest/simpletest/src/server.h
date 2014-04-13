@@ -3,16 +3,20 @@
 #include <QObject>
 #include <QVariant>
 
-class TServer :
-    QObject
+class XmlRpcServer;
+
+class TServer : public QObject
 {
     Q_OBJECT
 
 public:
     TServer( const QString &address, quint16 port, QObject *parent= 0 );
-    ~   TServer();
+    ~TServer();
 private slots :
     QVariant testFunc ( const QVariant &param );
+
+private:
+    XmlRpcServer    *srv_;
 };
 
 #endif /* SERVER_H */
