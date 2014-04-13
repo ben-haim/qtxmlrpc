@@ -2,7 +2,7 @@
 TEMPLATE = app
 DESTDIR = ../bin
 
-QT += network xml
+QT += network xml testlib
 
 
 INCLUDEPATH += ../../qtxmlrpc/server

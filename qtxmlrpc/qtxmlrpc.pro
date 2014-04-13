@@ -43,7 +43,9 @@ SOURCES += \
     utils/xmlrpcconv.cpp
 
 
-
+CONFIG(debug, debug|release) {
+DEFINES += DEBUG_PROTOCOL DEBUG_XMLRPC
+}
 
 
 
