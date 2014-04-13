@@ -390,7 +390,7 @@ XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString 
 void XmlRpcServer::incomingConnection( int socketDescriptor )
 {
     #ifdef DEBUG_XMLRPC
-    qDebug() << this << "new incoming connection";
+    qDebug() << Q_FUNC_INFO << " " << this << "  new incoming connection";
     #endif
 
     QAbstractSocket *s = NULL;
