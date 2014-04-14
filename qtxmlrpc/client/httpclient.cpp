@@ -118,7 +118,7 @@ void HttpClient::protocolStart()
 
     if ( method == POST )
       {
-        h.setValue( "Content-Type", "application/x-www-form-urlencoded" );
+        h.setValue( "Content-Type", "text/xml" );
         h.setValue( "Content-Length", QString::number( postData.length()) );
       }
 

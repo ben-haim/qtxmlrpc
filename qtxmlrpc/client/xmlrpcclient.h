@@ -16,6 +16,7 @@ class XmlRpcClient :
 
 public:
     XmlRpcClient( const QString &host, const quint16 port, QObject* parent = 0 );
+    XmlRpcClient( const QString &host, const quint16 port, const QString &path, QObject* parent = 0 );
     void     execute( const QString &method, const QVariantList &params );
     bool     isReady() const;
     QVariant response() const;

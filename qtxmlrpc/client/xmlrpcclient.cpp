@@ -12,6 +12,14 @@ XmlRpcClient::XmlRpcClient (const QString &host, const quint16 port , QObject* p
     connect( this, SIGNAL(error(QString)), SLOT(onError(QString)), Qt::UniqueConnection);
 }
 
+XmlRpcClient::XmlRpcClient(const QString& host, const quint16 port, const QString& path, QObject* parent) :
+    HttpClient( host, port, path, HttpClient::POST, parent ),
+    isReady_(false)
+{
+    connect( this, SIGNAL( dataReady( QByteArray)), SLOT( onDataReady( QByteArray)), Qt::UniqueConnection );
+    connect( this, SIGNAL(error(QString)), SLOT(onError(QString)), Qt::UniqueConnection);
+}
+
 void XmlRpcClient::execute( const QString &method, const QVariantList &params )
 {
     isReady_ = false;
