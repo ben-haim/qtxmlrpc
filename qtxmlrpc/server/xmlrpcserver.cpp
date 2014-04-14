@@ -385,9 +385,11 @@ XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString 
     sslParams= NULL;
     if ( !cert.isEmpty() && !key.isEmpty() ) sslParams= new SslParams( cert, key, this );
     #endif
+
+    connect(this, SIGNAL(newConnection()), this, SLOT(onNewConnection()) );
 }
 
-void XmlRpcServer::incomingConnection( int socketDescriptor )
+void XmlRpcServer::incomingConnection(qintptr socketDescriptor )
 {
     #ifdef DEBUG_XMLRPC
     qDebug() << Q_FUNC_INFO << " " << this << "  new incoming connection";
@@ -540,7 +542,14 @@ void XmlRpcServer::slotReceiverDestroed( QObject *o )
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "slotReceiverDestroed(): callbacks" << callbacks;
     qDebug() << this << "slotReceiverDestroed(): objectMethods" << objectMethods;
-    #endif
+#endif
+}
+
+void XmlRpcServer::onNewConnection()
+{
+#ifdef DEBUG_XMLRPC
+qDebug() << this << Q_FUNC_INFO;
+#endif
 }
 
 void XmlRpcServer::slotRequestReceived(HttpServer *p,
