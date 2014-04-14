@@ -22,7 +22,11 @@ class HttpClient :
 
 public:
     enum HttpMethod { GET, POST };
-    HttpClient( const QString &host, const quint16 port= 80, const QString &path= "/", const HttpMethod method= GET );
+    HttpClient( const QString &host,
+                const quint16 port= 80,
+                const QString &path= "/",
+                const HttpMethod method = GET,
+                QObject* parent = 0);
     ~HttpClient();
     inline void setPostData( const QByteArray &ba )     { postData = ba; }
     inline void setReferer( const QString &value )      { referer = value; }
@@ -43,15 +47,16 @@ private:
     bool readResponseBody();
     bool readChunked();
     bool readContentLength();
-    QUrl url;
-    HttpMethod method;
-    QByteArray postData;
-    QString referer;
-    QNetworkCookieJar cookieJar;
+private:
+    QUrl               url;
+    HttpMethod         method;
+    QByteArray         postData;
+    QString            referer;
+    QNetworkCookieJar  cookieJar;
     HttpResponseHeader responseHeader;
-    QByteArray responseHeaderData;
-    QByteArray responseBodyData;
-    qint64 chunkedSize;
-    static const int requestTimeout= 5000; /* msecs */
+    QByteArray         responseHeaderData;
+    QByteArray         responseBodyData;
+    qint64             chunkedSize;
+    static const int   requestTimeout= 5000; /* msecs */
 };
 #endif /* HTTPCLIENT_H */

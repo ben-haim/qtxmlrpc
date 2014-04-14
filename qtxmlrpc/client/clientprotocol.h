@@ -7,7 +7,7 @@
 #include <QString>
 #include <QTimer>
 #include <QAbstractSocket>
-#include <QtCore/QPointer>
+#include <QScopedPointer>
 
 
 //#define DEBUG_PROTOCOL
@@ -17,8 +17,8 @@ class Client_ :  public QObject
     Q_OBJECT
 
 public:
-    Client_( const QString &dstHost, const quint16 dstPort );
-    ~   Client_();
+    Client_( const QString &dstHost, const quint16 dstPort, QObject* parent = 0 );
+    ~Client_();
 public slots :
     void            deferredStart();
 protected slots :
@@ -30,14 +30,7 @@ protected slots :
 signals:
     void            error( const QString &errTxt );
     void            done();
-
 protected:
-    QPointer<QAbstractSocket>   socket;
-    QString                     dstHost;
-    quint16                     dstPort;
-    int                         protocolRetry;
-    int                         maxProtocolRetries;
-    bool                        protocolStarted;
     virtual QAbstractSocket     *buildSocket();
     virtual void                connectSocket();
     virtual void                protocolStart();
@@ -45,7 +38,13 @@ protected:
     void                        sureWrite( const QByteArray &response );
     void                        emitError( const QString &error );
     void                        emitDone();
-
+protected:
+    QScopedPointer<QAbstractSocket>   socket;
+    QString                     dstHost;
+    quint16                     dstPort;
+    int                         protocolRetry;
+    int                         maxProtocolRetries;
+    bool                        protocolStarted;
 private:
     void                stopTimers();
     QTimer              *connectTimeoutTimer;

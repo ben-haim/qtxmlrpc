@@ -2,8 +2,11 @@
 
 #include "xmlrpcclient.h"
 #include "xmlrpcconv.h"
-XmlRpcClient::XmlRpcClient ( const QString &host, const quint16 port ) :
-    HttpClient( host, port, "/RPC2", HttpClient::POST ), isReady_(false)
+
+
+XmlRpcClient::XmlRpcClient (const QString &host, const quint16 port , QObject* parent) :
+    HttpClient( host, port, "/RPC2", HttpClient::POST, parent ),
+    isReady_(false)
 {
     connect( this, SIGNAL( dataReady( QByteArray)), SLOT( onDataReady( QByteArray)), Qt::UniqueConnection );
     connect( this, SIGNAL(error(QString)), SLOT(onError(QString)), Qt::UniqueConnection);
