@@ -4,7 +4,8 @@
 #include <QTcpSocket>
 #include <QDateTime>
 
-Client_::Client_ ( const QString &dstHost, const quint16 dstPort ) :
+Client_::Client_ (const QString &dstHost, const quint16 dstPort , QObject* parent) :
+    QObject(parent),
     dstHost( dstHost ),
     dstPort( dstPort ),
     protocolRetry( 0 ),
@@ -12,14 +13,13 @@ Client_::Client_ ( const QString &dstHost, const quint16 dstPort ) :
     protocolStarted( false )
 {
     #ifdef DEBUG_PROTOCOL
-    qDebug()
-    << this << "Protocol(...)";
+    qDebug() << this << "Protocol(...)";
     #endif
-    connectTimeoutTimer= new QTimer( this );
+    connectTimeoutTimer = new QTimer( this );
     connectTimeoutTimer->setInterval(connectTimeout);
     connectTimeoutTimer->setSingleShot( true );
     connect( connectTimeoutTimer, SIGNAL(timeout()), SLOT(onConnectTimeout()) );
-    reconnectSleepTimer= new QTimer( this );
+    reconnectSleepTimer = new QTimer( this );
     reconnectSleepTimer->setSingleShot( true );
     reconnectSleepTimer->setInterval(reconnectSleep);
     connect( reconnectSleepTimer, SIGNAL(timeout()), SLOT(deferredStart()) );
@@ -30,10 +30,6 @@ Client_::~Client_()
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "~Protocol()";
     #endif
-    if ( socket )   /* alex312@meta.ua 23.11.10 */
-      {
-        socket->deleteLater();
-      }
 }
 
 QAbstractSocket *Client_::buildSocket()
@@ -51,29 +47,30 @@ void Client_::deferredStart()
     #endif
     //if ( protocolRetry == 0 )
     if( socket.isNull() )
-      {
-        socket = buildSocket();
-        connect( socket, SIGNAL( error( QAbstractSocket::SocketError)),
-                 SLOT( onSocketError( QAbstractSocket::SocketError)) );
-        connect( socket, SIGNAL( stateChanged( QAbstractSocket::SocketState)),
-                 SLOT( onSocketStateChanged( QAbstractSocket::SocketState)) );
-        setParent( socket );
-      }
+        {
+            socket.reset(buildSocket());
+            connect( socket.data(), SIGNAL( error( QAbstractSocket::SocketError)),
+                     SLOT( onSocketError( QAbstractSocket::SocketError)) );
+            connect( socket.data(), SIGNAL( stateChanged( QAbstractSocket::SocketState)),
+                     SLOT( onSocketStateChanged( QAbstractSocket::SocketState)) );
+        }
 
     if ( protocolRetry >= maxProtocolRetries )
-      {
-        emitError( "Maximum protocol retries has reached" );
-        return;
-      }
+        {
+            emitError( "Maximum protocol retries has reached" );
+            return;
+        }
 
-    if ( !connectTimeoutTimer->isActive() ) connectTimeoutTimer->start( connectTimeout );
-    if ( reconnectSleepTimer->isActive() ) reconnectSleepTimer->stop();
+    if ( !connectTimeoutTimer->isActive() )
+        connectTimeoutTimer->start( connectTimeout );
+    if ( reconnectSleepTimer->isActive() )
+        reconnectSleepTimer->stop();
+
     switch ( socket->state() )
         {
         case QAbstractSocket::UnconnectedState: connectSocket(); break;
         case QAbstractSocket::ConnectedState:   protocolStart(); break;
         default:
-                //emitError( "Unexpected socet state." );
                 #ifdef DEBUG_PROTOCOL
                 qDebug() << this << "Unexpected socet state."<<socket->state();
                 #endif
@@ -103,15 +100,16 @@ void Client_::onSocketStateChanged( QAbstractSocket::SocketState socketState )
     qDebug() << this << "onSocketStateChanged(" << socketState << ")";
     #endif
     if ( protocolRetry >= maxProtocolRetries )
-      {
-        emitError( "maxProtocolRetries reached" );
-        return;
-      }
+        {
+            emitError( "maxProtocolRetries reached" );
+            return;
+        }
 
     switch ( socketState )
         {
         case QAbstractSocket::ConnectedState:
-            if ( !protocolStarted ) protocolStart();
+            if ( !protocolStarted )
+                protocolStart();
             break;
         case QAbstractSocket::UnconnectedState:
             if ( protocolStarted )
@@ -123,7 +121,8 @@ void Client_::onSocketStateChanged( QAbstractSocket::SocketState socketState )
                     //reconnectSleepTimer->start( reconnectSleep );
                 }
             break;
-        default: break;
+        default:
+            break;
         }
 }
 
@@ -168,8 +167,8 @@ void Client_::protocolStart()
     stopTimers();
     protocolRetry++;
     protocolStarted = true;
-    connect( socket, SIGNAL( readyRead()), this, SLOT( onReadyRead()) );
-    connect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( onBytesWritten( qint64)) );
+    connect( socket.data(), SIGNAL( readyRead()), this, SLOT( onReadyRead()) );
+    connect( socket.data(), SIGNAL( bytesWritten( qint64)), this, SLOT( onBytesWritten( qint64)) );
 }
 
 void Client_::protocolStop()
@@ -179,8 +178,8 @@ void Client_::protocolStop()
     #endif
     protocolStarted = false;
     protocolRetry--;
-    disconnect( socket, SIGNAL( readyRead()), this, SLOT( onReadyRead()) );
-    disconnect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( onBytesWritten( qint64)) );
+    disconnect( socket.data(), SIGNAL( readyRead()), this, SLOT( onReadyRead()) );
+    disconnect( socket.data(), SIGNAL( bytesWritten( qint64)), this, SLOT( onBytesWritten( qint64)) );
     socket->abort();
 }
 
@@ -210,9 +209,11 @@ void Client_::emitError( const QString &errTxt )
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "emitError(...)";
     #endif
-    if ( protocolStarted ) protocolStop();
-    else stopTimers();
-    //socket->disconnect( this );
+    if ( protocolStarted )
+        protocolStop();
+    else
+        stopTimers();
+
     socket->abort();
 
     emit    error( errTxt );
@@ -223,9 +224,10 @@ void Client_::emitDone()
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "emitDone()";
     #endif
-    if ( protocolStarted ) protocolStop();
-    else stopTimers();
-    //socket->disconnect( this );
+    if ( protocolStarted )
+        protocolStop();
+    else
+        stopTimers();
 
     emit    done();
 }
@@ -236,17 +238,23 @@ void Client_::sureWrite( const QByteArray &response )
     qDebug() << this << "sureWrite(...)" << endl << response;
     #endif
 
-    qint64      len= response.size();
-    const char  *ptr= response.data();
+    qint64      len  = response.size();
+    const char  *ptr = response.data();
     while ( len )
-      {
-        qint64  res= socket->write( ptr, len );
-        if ( res < 0 ) break;
-        len-= res;
-        ptr+= res;
-      }
+        {
+            qint64  res= socket->write( ptr, len );
+            if ( res < 0 )
+                {
+                    #ifdef DEBUG_PROTOCOL
+                    qCritical() << this << socket->errorString();
+                    #endif
+                    break;
+                }
+            len-= res;
+            ptr+= res;
+        }
 
-    socket->flush();
+    //socket->flush();
 }
 
 void Client_::stopTimers()
@@ -254,8 +262,10 @@ void Client_::stopTimers()
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "stopTimers()";
     #endif
-    if ( connectTimeoutTimer->isActive() ) connectTimeoutTimer->stop();
-    if ( reconnectSleepTimer->isActive() ) reconnectSleepTimer->stop();
+    if ( connectTimeoutTimer->isActive() )
+        connectTimeoutTimer->stop();
+    if ( reconnectSleepTimer->isActive() )
+        reconnectSleepTimer->stop();
 }
 
 

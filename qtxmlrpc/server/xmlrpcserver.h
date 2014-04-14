@@ -201,8 +201,10 @@ private slots :
     /* when registrant dies, we need to remove their callbacks методов. */
     void    slotReceiverDestroed( QObject * );
 
+    void    onNewConnection();
+
 protected:
-    void    incomingConnection( int socketDescriptor );
+    void    incomingConnection( qintptr socketDescriptor );
 
 private:
 

@@ -7,12 +7,7 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS = ./utils \
-          ./client \
-          ./server \
+SUBDIRS = ./qtxmlrpc \
           ./xmlrpctest
-
-
-
 
 
