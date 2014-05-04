@@ -13,7 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 UI_HEADERS_DIR = build
 UI_DIR         = build
 
-
+INCLUDEPATH += ../../qtxmlrpc
 INCLUDEPATH += ../../qtxmlrpc/server
 INCLUDEPATH += ../../qtxmlrpc/client
 INCLUDEPATH += ../../qtxmlrpc/utils

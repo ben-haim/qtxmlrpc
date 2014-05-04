@@ -9,6 +9,7 @@
 #include <QString>
 #include <QVariant>
 #include <httpheader.hpp>
+#include "qtxmlrpcconfig.hpp"
 
 /* ssl */
 #include <QSslCertificate>
@@ -157,7 +158,7 @@ public:
 /* @author kisel2626@gmail.com */
 class   QDomElement;
 
-class XmlRpcServer : public QTcpServer
+class QXMLRPC_DECL XmlRpcServer : public QTcpServer
 {
     Q_OBJECT
 public:

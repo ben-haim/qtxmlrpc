@@ -24,7 +24,7 @@ MOC_DIR = build/release
 TARGET = qtxmlrpc
 }
 
-INCLUDEPATH += client server utils
+INCLUDEPATH += client server utils .
 
 HEADERS += \
     client/clientprotocol.h \
@@ -32,7 +32,8 @@ HEADERS += \
     client/xmlrpcclient.h \
     server/xmlrpcserver.h \
     utils/httpheader.hpp \
-    utils/xmlrpcconv.h
+    utils/xmlrpcconv.h \
+    qtxmlrpcconfig.hpp
 
 SOURCES += \
     client/clientprotocol.cpp \

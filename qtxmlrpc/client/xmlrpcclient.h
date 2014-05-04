@@ -3,13 +3,14 @@
 #ifndef XMLRPCCLIENT_H
 #define XMLRPCCLIENT_H
 #include "httpclient.h"
+#include "qtxmlrpcconfig.hpp"
 #include <QObject>
 #include <QString>
 #include <QVariant>
 #include <QByteArray>
 #include <QVariantList>
 
-class XmlRpcClient :
+class QXMLRPC_DECL XmlRpcClient :
     public HttpClient
 {
     Q_OBJECT
