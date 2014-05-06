@@ -2,9 +2,10 @@
 #include <QWaitCondition>
 #include <QMutex>
 #include <QTimer>
+#include <iostream>
+
 #include "server.h"
 #include "client.h"
-#include <iostream>
 
 
 int main( int argc, char **argv )
@@ -14,8 +15,8 @@ int main( int argc, char **argv )
 
     std::cout << "Test build with Qt " << QT_VERSION_STR << std::endl;
 
-    QString address= "127.0.0.1";
-    quint16 port= 8080;
+    QString address = "127.0.0.1";
+    quint16 port    = 8080;
     TServer s( address, port );
     Client  c( address, port );
 
