@@ -4,7 +4,7 @@
  */
 #include <QDateTime>
 #include <QApplication>
-#include <xmlrpcclient.h>
+#include <qtxmlrpc.hpp>
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 

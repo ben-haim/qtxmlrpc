@@ -8,7 +8,7 @@
 #include <QMap>
 #include <QList>
 #include <QByteArray>
-#include <httpheader.hpp>
+#include <utils/httpheader.hpp>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 

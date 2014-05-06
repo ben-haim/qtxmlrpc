@@ -2,7 +2,7 @@
 #define SERVER_H
 #include <QObject>
 #include <QVariant>
-#include <xmlrpcserver.h>
+#include <qtxmlrpc.hpp>
 class TServer :
     QObject
 {

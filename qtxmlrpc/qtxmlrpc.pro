@@ -33,7 +33,8 @@ HEADERS += \
     server/xmlrpcserver.h \
     utils/httpheader.hpp \
     utils/xmlrpcconv.h \
-    qtxmlrpcconfig.hpp
+    qtxmlrpcconfig.hpp \
+    qtxmlrpc.hpp
 
 SOURCES += \
     client/clientprotocol.cpp \
