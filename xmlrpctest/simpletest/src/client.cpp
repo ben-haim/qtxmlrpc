@@ -1,7 +1,7 @@
 
 
 #include "client.h"
-#include "xmlrpcclient.h"
+#include <qtxmlrpc.hpp>
 #include <QVariantList>
 #include <QCoreApplication>
 #include <iostream>

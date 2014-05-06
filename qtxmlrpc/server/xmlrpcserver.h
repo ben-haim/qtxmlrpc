@@ -8,7 +8,7 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
-#include <httpheader.hpp>
+#include <utils/httpheader.hpp>
 #include "qtxmlrpcconfig.hpp"
 
 /* ssl */
