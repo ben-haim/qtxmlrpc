@@ -14,8 +14,8 @@ Client::Client ( const QString &address, quint16 port, QObject *parent ) :
     cur_idx_(0)
 {
     QVariantMap m;
-    m["one"]= 1;
-    m["two"]= 2;
+    m["one"]  = 1;
+    m["two"]  = 2;
     m["three"]= 3;
     test_elements_
             << QString("It is a string.")
