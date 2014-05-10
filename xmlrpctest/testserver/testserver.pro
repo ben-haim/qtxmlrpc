@@ -7,9 +7,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
 INCLUDEPATH += ../../qtxmlrpc
-#INCLUDEPATH += ../../qtxmlrpc/server
-#INCLUDEPATH += ../../qtxmlrpc/client
-#INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 

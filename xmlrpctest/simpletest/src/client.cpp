@@ -40,6 +40,10 @@ void Client::testFunc( const QVariant &param )
 
 void Client::onDataReady( const QVariant &response )
 {
+    XmlRpcClient* c = qobject_cast<XmlRpcClient*>(this->sender());
+    if( c )
+        c->deleteLater();
+
     qDebug() << response;
     ready    = true;
     res      = response;
@@ -53,6 +57,10 @@ void Client::onDataReady( const QVariant &response )
 
 void Client::onError( const QString &errTxt )
 {
+    XmlRpcClient* c = qobject_cast<XmlRpcClient*>(this->sender());
+    if( c )
+        c->deleteLater();
+
     qDebug() << errTxt;
     ready   = true;
     res     = QVariant( errTxt );
@@ -69,7 +77,7 @@ void Client::testNext()
 QVariant Client::operator   ( ) ( const QVariant &param )
 {
     ready= false;
-    XmlRpcClient    *client= new XmlRpcClient( address, port );
+    XmlRpcClient    *client = new XmlRpcClient( address, port );
     connect( client, SIGNAL(dataReady(QVariant)), this, SLOT(onDataReady(QVariant)) );
     connect( client, SIGNAL(error ( const QString & )), this, SLOT(onError ( const QString & )) );
     client->execute( "testFunc", QVariantList() << param );

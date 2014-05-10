@@ -14,9 +14,6 @@ UI_HEADERS_DIR = build
 UI_DIR         = build
 
 INCLUDEPATH += ../../qtxmlrpc
-#INCLUDEPATH += ../../qtxmlrpc/server
-#INCLUDEPATH += ../../qtxmlrpc/client
-#INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
