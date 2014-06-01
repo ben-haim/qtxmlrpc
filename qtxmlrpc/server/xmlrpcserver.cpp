@@ -10,370 +10,6 @@
 #include "xmlrpcserver.h"
 #include "xmlrpcconv.h"
 
-#ifndef QT_NO_OPENSSL
-SslParams::SslParams ( const QString &certFile, const QString &keyFile, QObject *parent ) :
-    QObject( parent )
-{
-    QFile   fc( certFile, this );
-    fc.open( QFile::ReadOnly );
-    certificate= QSslCertificate( fc.readAll() );
-    fc.close();
-    ca << certificate;
-    QFile   fk( keyFile, this );
-    fk.open( QFile::ReadOnly );
-    privateKey= QSslKey( fk.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
-    fk.close();
-}
-#endif
-
-Protocol::Protocol( QAbstractSocket *parent, const int _timeout ) :
-    QObject( parent ),
-    timeout( 0 ),
-    timeoutTimerId( 0 ),
-    socket( parent )
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "Protocol(): child of" << socket;
-    #endif
-
-    /* check we are only one protocol, working with this socket, at this time */
-    foreach( QObject * o, parent->children() ) if ( o != this && qobject_cast < Protocol * > (o) )
-      {
-        qCritical() << this << "Protocol(): socket" << parent << "already have another protocol" << o;
-        qFatal( "programming error" );
-      }
-
-    if ( _timeout > 0 ) setTimeout( _timeout );
-}
-
-Protocol::~Protocol()
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "~Protocol()";
-    #endif
-}
-
-/*
- =======================================================================================================================
-    timeout restarts
- =======================================================================================================================
- */
-void Protocol::setTimeout( const int _timeout )
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "setTimeout():" << _timeout << "prev timeout was" << timeout;
-    #endif
-    if ( timeoutTimerId )
-      {
-        #ifdef DEBUG_PROTOCOL
-        qDebug() << this << "setTimeout(): stopping previous timer";
-        #endif
-        killTimer( timeoutTimerId );
-        timeoutTimerId= 0;
-      }
-
-    if ( !(timeout > 0) && _timeout > 0 )
-      {
-
-        /*
-         * если предыдущий timeout НЕ был больше ноля, а текущий больше,
-         * значит нужно прицепить сигналы приема/отсылки данных на сокете
-         */
-        #ifdef DEBUG_PROTOCOL
-        qDebug() << this << "setTimeout(): connect socket signals readyRead() and bytesWritten()";
-        #endif
-        connect( socket, SIGNAL( readyRead()), this, SLOT( __slotReadyRead()) );
-        connect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( __slotBytesWritten( qint64)) );
-      }
-    else if ( timeout > 0 && !(_timeout > 0) )
-      {
-
-        /* новый выключен, старый был включен */
-        #ifdef DEBUG_PROTOCOL
-        qDebug() << this << "setTimeout(): disconnect socket signals readyRead() and bytesWritten()";
-        #endif
-        disconnect( socket, SIGNAL( readyRead()), this, SLOT( __slotReadyRead()) );
-        disconnect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( __slotBytesWritten( qint64)) );
-      }
-
-    timeout= _timeout;
-    if ( timeout > 0 ) restartProtocolTimeoutTimer();
-}
-
-void Protocol::restartProtocolTimeoutTimer()
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "restartProtocolTimeoutTimer()";
-    #endif
-    if ( timeoutTimerId ) killTimer( timeoutTimerId );
-    Q_ASSERT( timeout > 0 );
-    timeoutTimerId= startTimer( timeout );
-}
-
-void Protocol::timerEvent( QTimerEvent *event )
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "timerEvent():" << event->timerId() << "protocol timeout timer id" << timeoutTimerId;
-    #endif
-    if ( event->timerId() == timeoutTimerId )
-      {
-        #ifdef DEBUG_PROTOCOL
-        qDebug() << this << "timerEvent(): emit ProtocolTimeout()";
-        #endif
-
-        emit    protocolTimeout( this );
-        killTimer( timeoutTimerId );
-        timeoutTimerId= 0;
-      }
-}
-
-void Protocol::__slotReadyRead()
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "__slotReadyRead():" << socket->bytesAvailable()
-        << "bytes available, restarting protocol timeout timer";
-    #endif
-    restartProtocolTimeoutTimer();
-}
-
-void Protocol::__slotBytesWritten( qint64  bytes  )
-{
-    #ifdef DEBUG_PROTOCOL
-    qDebug() << this << "__slotBytesWritten():" << bytes << "written, restarting protocol timeout timer";
-    #else
-    Q_UNUSED(bytes)
-    #endif
-    restartProtocolTimeoutTimer();
-}
-
-HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
-    Protocol( parent, _timeout ),
-    state( ReadingHeader )
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "HttpServer():" << parent;
-    #endif
-    connect( socket, SIGNAL( readyRead()), this, SLOT( slotReadyRead()) );
-    connect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( slotBytesWritten( qint64)) );
-    #ifndef QT_NO_OPENSSL
-    if ( socket->inherits( "QSslSocket") )
-        {
-            QSslSocket  *sslServer= qobject_cast < QSslSocket * > ( socket );
-            sslServer->startServerEncryption();
-        }
-    else
-        {
-            if ( socket->bytesAvailable() > 0 )
-                {
-                    slotReadyRead();
-                }
-        }
-
-    #else
-    if ( socket->bytesAvailable() > 0 )
-      {
-        slotReadyRead();
-      }
-    #endif
-}
-
-void HttpServer::slotReadyRead()
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "slotReadyRead():" << socket->bytesAvailable() << "bytes available";
-    #endif
-    if ( !socket->bytesAvailable() ) return;
-    switch ( state )
-        {
-        case ReadingHeader:
-
-            /* если заголовок прочитан */
-            if ( readRequestHeader() )
-              {
-
-                /*
-                 * если судя по заголовку есть тело, меняем
-                 * статус на чтение тела ;
-                 * и попадаем в следующий case
-                 */
-                if ( requestContainsBody() ) state= ReadingBody;
-              } else
-              {
-
-                /*
-                 * тела нет, бросаем сигнал, что заголовок
-                 * получен
-                 */
-                Q_ASSERT( !socket->bytesAvailable() );
-                state= WaitingReply;
-                #ifdef DEBUG_XMLRPC
-                qDebug() << this << "slotReadyRead(): emit requestReceived()";
-                #endif
-
-                emit    requestReceived( this, requestHeader, requestBody );
-                break;
-              }
-
-        case ReadingBody:
-            if ( readRequestBody() )
-              {
-
-                /*
-                 * тело прочитано, бросаем сигнал, что запрос получен
-                 */
-                Q_ASSERT( !socket->bytesAvailable() );
-                state= WaitingReply;
-                #ifdef DEBUG_XMLRPC
-                qDebug() << this << "slotReadyRead(): emit requestReceived()";
-                #endif
-
-                emit    requestReceived( this, requestHeader, requestBody );
-              }
-            break;
-        case WaitingReply:
-            qCritical() << this << "slotReadyRead(): got data in WaitingReply state, emit parseError()";
-
-            emit    parseError( this );
-            break;
-        case SendingReply:
-            qCritical() << this << "slotReadyRead(): got data in SendingHeader state, emit parseError()";
-
-            emit    parseError( this );
-            break;
-        case Done:
-            qCritical() << this << "slotReadyRead(): got data in Done state, emit parseError()";
-
-            emit    parseError( this );
-            break;
-        default:
-            qCritical() << this << "slotReadyRead(): unknown state";
-            qFatal( "programming error" );
-        }
-}
-
-bool HttpServer::readRequestHeader()
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "readRequestHeader()";
-    #endif
-
-    /* code from qhttp.cpp */
-    bool        end = false;
-    QByteArray  tmp;
-    QByteArray rn( "\r\n", 2 ), n( "\n", 1 );
-    while ( !end && socket->canReadLine() )
-      {
-        tmp = socket->readLine();
-        if ( tmp == rn || tmp == n || tmp.isEmpty() )
-            end = true;
-        else
-            requestHeaderBody.append( tmp );
-      }
-
-    if ( !end )
-      {
-        #ifdef DEBUG_XMLRPC
-        qDebug() << this << "readRequestHeader(): waiting more data, readed" << endl << requestHeaderBody;
-        #endif
-        return false;
-      }
-
-    //requestHeader= QHttpRequestHeader( requestHeaderBody );
-    requestHeader = HttpRequestHeader( requestHeaderBody );
-    requestHeaderBody.clear();
-    requestBody.clear();
-    if ( requestHeader.isValid() )
-      {
-        #ifdef DEBUG_XMLRPC
-        qDebug() << this << "readRequestHeader(): header valid" << endl << requestHeader.toString();
-        #endif
-        return true;
-      }
-
-    qWarning() << this << "readRequestHeader(): invalid requestHeader, emit parseError()"
-               << endl << requestHeader.toString();
-
-    emit    parseError( this );
-    return false;
-}
-
-bool HttpServer::readRequestBody()
-{
-    Q_ASSERT( requestHeader.isValid() );
-
-    qint64  bytesToRead= ( qint64 ) requestHeader.contentLength() - ( qint64 ) requestBody.size();
-    if ( bytesToRead > socket->bytesAvailable() ) bytesToRead= socket->bytesAvailable();
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "readRequestBody(): already read" << requestBody.size() << "to read" << bytesToRead;
-    #endif
-    requestBody.append( socket->read( bytesToRead) );
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "readRequestBody(): already read" << requestBody.size()
-        << "contentLength" << requestHeader.contentLength();
-    #endif
-    if ( requestBody.size() == ( int ) requestHeader.contentLength() )
-        return true;
-    else
-        return false;
-}
-
-bool HttpServer::requestContainsBody()
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "requestContainsBody()";
-    #endif
-    Q_ASSERT( requestHeader.isValid() );
-    return requestHeader.hasContentLength() && requestHeader.hasContentLength();
-}
-
-void HttpServer::slotBytesWritten( qint64 bytes )
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "slotBytesWritten():" << bytes;
-    #endif
-    bytesWritten += bytes;
-    if ( bytesWritten == bytesToWrite )
-        {
-            state= Done;
-            emit    replySent( this );
-        }
-}
-
-void HttpServer::slotSendReply( const QByteArray &body )
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "sendReply():" << body;
-    #endif
-    Q_ASSERT( state == WaitingReply );
-    state = SendingReply;
-
-    /*
-     * QByteArray body = toXmlRpcResponse( e );
-     */
-    QByteArray hb = xmlRpcResponseHeader( body.size());
-    bytesToWrite  = hb.size() + body.size();
-    bytesWritten  = 0;
-    socket->write( hb );
-    socket->write( body );
-    socket->flush();
-}
-
-void HttpServer::slotSendReply( const QVariant &e )
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "sendReply():" << e;
-    #endif
-    Q_ASSERT( state == WaitingReply );
-    state= SendingReply;
-
-    QByteArray          body= toXmlRpcResponse( e );
-    QByteArray          hb = xmlRpcResponseHeader( body.size());
-    bytesToWrite = hb.size() + body.size();
-    bytesWritten = 0;
-    socket->write( hb );
-    socket->write( body );
-    socket->flush();
-}
 
 XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString &key, const QByteArray & ) :
     QTcpServer( parent )
@@ -382,11 +18,18 @@ XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString 
     qDebug() << this << "XmlRpcServer(): parent" << parent;
     #endif
     #ifndef QT_NO_OPENSSL
-    sslParams= NULL;
-    if ( !cert.isEmpty() && !key.isEmpty() ) sslParams= new SslParams( cert, key, this );
+    if ( !cert.isEmpty() && !key.isEmpty() )
+        sslParams = new SslParams( cert, key );
     #endif
 
     connect(this, SIGNAL(newConnection()), this, SLOT(onNewConnection()) );
+}
+
+XmlRpcServer::~XmlRpcServer()
+{
+#ifndef QT_NO_OPENSSL
+    delete sslParams;
+#endif
 }
 
 void XmlRpcServer::incomingConnection(qintptr socketDescriptor )
@@ -530,9 +173,14 @@ void XmlRpcServer::registerSlot( QObject *receiver, const char *slot, QByteArray
     #endif
 }
 
+DeferredResult*XmlRpcServer::deferredEcho(const QVariant& e)
+{
+    return new DeferredEcho( e );
+}
+
 void XmlRpcServer::slotReceiverDestroed( QObject *o )
 {
-    #ifdef DEBUG_XMLRPC
+#ifdef DEBUG_XMLRPC
     qDebug() << this << "slotReceiverDestroed():" << o;
     #endif
     Q_ASSERT( objectMethods.contains( o) );
@@ -733,29 +381,3 @@ void XmlRpcServer::slotReplySent( HttpServer *p )
     p->getSocket()->close();
 }
 
-DeferredEcho::DeferredEcho( const QVariant &e ) :
-    echo( e )
-{
-    startTimer( 1000 ); /* one second timeout, before echo */
-}
-
-void DeferredEcho::timerEvent( QTimerEvent * )
-{
-    emit    sendReply( echo );
-}
-
-DeferredResult::DeferredResult()
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "DeferredResult()";
-    #endif
-}
-
-DeferredResult::~DeferredResult()
-{
-    #ifdef DEBUG_XMLRPC
-    qDebug() << this << "~DeferredResult()";
-    #endif
-}
-
-#include "moc_xmlrpcserver.cpp"

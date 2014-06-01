@@ -268,5 +268,3 @@ void Client_::stopTimers()
         reconnectSleepTimer->stop();
 }
 
-
-#include "moc_clientprotocol.cpp"

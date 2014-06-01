@@ -5,9 +5,6 @@ DESTDIR = ../bin
 QT += network xml testlib
 
 INCLUDEPATH += ../../qtxmlrpc
-#INCLUDEPATH += ../../qtxmlrpc/server
-#INCLUDEPATH += ../../qtxmlrpc/client
-#INCLUDEPATH += ../../qtxmlrpc/utils
 
 LIBS+= -L../../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 

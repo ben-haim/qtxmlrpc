@@ -34,7 +34,11 @@ HEADERS += \
     utils/httpheader.hpp \
     utils/xmlrpcconv.h \
     qtxmlrpcconfig.hpp \
-    qtxmlrpc.hpp
+    qtxmlrpc.hpp \
+    server/protocol.h \
+    server/httpserver.h \
+    server/deferredresult.h \
+    utils/sslparams.h
 
 SOURCES += \
     client/clientprotocol.cpp \
@@ -42,7 +46,11 @@ SOURCES += \
     client/xmlrpcclient.cpp \
     server/xmlrpcserver.cpp \
     utils/httpheader.cpp \
-    utils/xmlrpcconv.cpp
+    utils/xmlrpcconv.cpp \
+    server/protocol.cpp \
+    server/httpserver.cpp \
+    server/deferredresult.cpp \
+    utils/sslparams.cpp
 
 
 CONFIG(debug, debug|release) {

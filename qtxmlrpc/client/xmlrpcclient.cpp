@@ -61,5 +61,3 @@ void XmlRpcClient::onError(const QString &errStr)
     isReady_ = true;
 }
 
-
-#include "moc_xmlrpcclient.cpp"
