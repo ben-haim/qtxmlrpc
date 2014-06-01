@@ -248,5 +248,3 @@ void HttpClient::onProtocolDone()
     emit    dataReady( responseBodyData );
 }
 
-
-#include "moc_httpclient.cpp"

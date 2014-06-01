@@ -29,4 +29,22 @@ QVariant            parseXmlRpcArray ( const QDomElement &e, QString &err );
 
 QVariantMap         getFaultCode     ( const QVariant& fc);
 
+/*
+ * Types from http://www.xmlrpc.com/spec maps into QVariant as: int - int, boolean
+ * - bool, string - QString, double double, dateTime.iso8601 - QDateTime, base64 -
+ * QByteArray array - QVariantList struct - QVariantMap Fault method response
+ * generated, if return value is QVariantMap with two fields: faultCode,
+ * faultString. ;
+ * creates xmlrpc fault ;
+ * Use this in your callbacks, as return createFault( code, msg );
+ * For example, in python, xmlrpclib.Fault exception will be raised.
+ */
+inline QVariant createFault ( const int code, const QString &msg )
+{
+    QVariantMap f;
+    f["faultCode"  ] = code;
+    f["faultString"] = msg ;
+    return f;
+}
+
 #endif
