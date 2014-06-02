@@ -369,7 +369,7 @@ void XmlRpcServer::slotRequestReceived(HttpServer *p,
         {
             qCritical() << this << "slotRequestReceived(): can't invoke" << methodName << params;
 
-            QVariant    fault= createFault( -1, "can't invoke " + path + methodName + ", wrong parameters number?" );
+            QVariant    fault = createFault( -1, "can't invoke " + path + methodName + ", wrong parameters number?" );
             p->slotSendReply( toXmlRpcResponse( fault) );
             return;
         }
