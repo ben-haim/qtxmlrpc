@@ -4,7 +4,7 @@
 *  author  : 
 *******************************************************************************/
 
-#include "httpheader.hpp"
+#include "httpheader.h"
 #include <QSet>
 
 HttpHeader::HttpHeader() : valid_(true)
