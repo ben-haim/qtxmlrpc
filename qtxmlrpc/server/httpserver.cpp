@@ -160,14 +160,15 @@ bool HttpServer::readRequestBody()
     Q_ASSERT( requestHeader.isValid() );
 
     qint64  bytesToRead= ( qint64 ) requestHeader.contentLength() - ( qint64 ) requestBody.size();
-    if ( bytesToRead > socket->bytesAvailable() ) bytesToRead= socket->bytesAvailable();
+    if ( bytesToRead > socket->bytesAvailable() )
+        bytesToRead = socket->bytesAvailable();
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "readRequestBody(): already read" << requestBody.size() << "to read" << bytesToRead;
     #endif
     requestBody.append( socket->read( bytesToRead) );
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "readRequestBody(): already read" << requestBody.size()
-        << "contentLength" << requestHeader.contentLength();
+             << "contentLength" << requestHeader.contentLength();
     #endif
     if ( requestBody.size() == ( int ) requestHeader.contentLength() )
         return true;

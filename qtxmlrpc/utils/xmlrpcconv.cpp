@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include "xmlrpcconv.h"
-#include "httpheader.hpp"
+#include "httpheader.h"
 
 #define XMLRPC_WITHSPACES
 
