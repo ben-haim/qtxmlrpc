@@ -10,6 +10,6 @@
 #include <qtxmlrpcconfig.hpp>
 #include <client/xmlrpcclient.h>
 #include <server/xmlrpcserver.h>
-#include <utils/httpheader.hpp>
+#include <utils/httpheader.h>
 
 #endif // QTXMLRPC_HPP

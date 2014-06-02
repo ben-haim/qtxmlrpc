@@ -8,7 +8,7 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
-#include <utils/httpheader.hpp>
+#include <utils/httpheader.h>
 #include "qtxmlrpcconfig.hpp"
 #include "httpserver.h"
 #include "deferredresult.h"

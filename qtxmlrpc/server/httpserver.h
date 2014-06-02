@@ -8,7 +8,7 @@
 #define HTTPSERVER_HPP
 
 #include "protocol.h"
-#include "utils/httpheader.hpp"
+#include "utils/httpheader.h"
 
 /* very basic HttpServer for XmlRpc */
 class HttpServer : public Protocol
