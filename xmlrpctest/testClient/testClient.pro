@@ -46,3 +46,6 @@ FORMS    += ./src/mainwindow.ui
 
 RESOURCES += \
     app_res.qrc
+
+unix: QMAKE_LFLAGS += -Wl,-rpath,'../../lib/$$basename(QMAKESPEC)/$$QT_VERSION'
+unix: QMAKE_LFLAGS += -Wl,-rpath,'.'
