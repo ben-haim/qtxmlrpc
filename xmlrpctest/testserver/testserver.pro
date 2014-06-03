@@ -32,3 +32,6 @@ LIBS += -lqtxmlrpcd
 else {
 LIBS += -lqtxmlrpc
 }
+
+unix: QMAKE_LFLAGS += -Wl,-rpath,'../../lib/$$basename(QMAKESPEC)/$$QT_VERSION'
+unix: QMAKE_LFLAGS += -Wl,-rpath,'.'

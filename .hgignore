@@ -28,3 +28,4 @@ xmlrpctest/bin/testsrv
 xmlrpctest/bin/testsrvd
 qrc_*.cpp
 *.rc
+*.so*

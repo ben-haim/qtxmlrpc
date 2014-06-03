@@ -4,8 +4,15 @@
 
 
 TEMPLATE = lib
-CONFIG += staticlib
 QT = core network xml
+
+contains( CONFIG, staticlib ) {
+
+}
+else {
+CONFIG += dll
+DEFINES += QXMLRPC_SHARED
+}
 
 DESTDIR = ../lib/$$basename(QMAKESPEC)/$$QT_VERSION
 
