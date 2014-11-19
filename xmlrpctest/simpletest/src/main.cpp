@@ -23,4 +23,6 @@ int main( int argc, char **argv )
     QTimer::singleShot( 1, &c, SLOT( start() ) );
 
     return app.exec();
+
+    Q_UNUSED(s);
 }

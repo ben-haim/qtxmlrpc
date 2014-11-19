@@ -9,6 +9,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include "qtxmlrpcconfig.hpp"
 
 /*
  =======================================================================================================================
@@ -19,7 +20,7 @@
     after emmiting result.
  =======================================================================================================================
  */
-class DeferredResult : public QObject
+class QXMLRPC_DECL DeferredResult : public QObject
 {
     Q_OBJECT
 public:
@@ -30,7 +31,7 @@ signals:
     void    sendReply( const QByteArray & );
 };
 
-class DeferredEcho : public DeferredResult
+class QXMLRPC_DECL DeferredEcho : public DeferredResult
 {
     Q_OBJECT
 public:
