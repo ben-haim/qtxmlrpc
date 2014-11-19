@@ -29,3 +29,5 @@ xmlrpctest/bin/testsrvd
 qrc_*.cpp
 *.rc
 *.so*
+*.Release
+*.Debug
