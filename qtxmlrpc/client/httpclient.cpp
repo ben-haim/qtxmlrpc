@@ -7,7 +7,7 @@ HttpClient::HttpClient (const QString &host,
                         const QString &path,
                         const HttpMethod method ,
                         QObject* parent) :
-    Client_( host, port, parent ),
+    NetworkClient( host, port, parent ),
     httpState( Waiting ),
     method( method )
 {
@@ -82,13 +82,13 @@ void HttpClient::onReadyRead()
 
 void HttpClient::protocolStop()
 {
-    Client_::protocolStop();
+    NetworkClient::protocolStop();
     httpState = Waiting;
 }
 
 void HttpClient::protocolStart()
 {
-    Client_::protocolStart();
+    NetworkClient::protocolStart();
     Q_ASSERT( httpState == Waiting );
 
     QString path= url.path();

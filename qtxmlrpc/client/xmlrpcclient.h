@@ -10,8 +10,7 @@
 #include <QByteArray>
 #include <QVariantList>
 
-class QXMLRPC_DECL XmlRpcClient :
-    public HttpClient
+class QXMLRPC_DECL XmlRpcClient : public HttpClient
 {
     Q_OBJECT
 
