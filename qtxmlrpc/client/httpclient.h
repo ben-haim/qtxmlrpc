@@ -15,11 +15,9 @@
 // #define HTTP_CLIENT_DEBUG ;
 // #define TRACE_HTTP
 
-class HttpClient :
-    public Client_
+class HttpClient : public NetworkClient
 {
     Q_OBJECT
-
 public:
     enum HttpMethod { GET, POST };
     HttpClient( const QString &host,

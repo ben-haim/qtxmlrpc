@@ -12,13 +12,13 @@
 
 //#define DEBUG_PROTOCOL
 
-class Client_ :  public QObject
+class NetworkClient :  public QObject
 {
     Q_OBJECT
 
 public:
-    Client_( const QString &dstHost, const quint16 dstPort, QObject* parent = 0 );
-    ~Client_();
+    NetworkClient( const QString &dstHost, const quint16 dstPort, QObject* parent = 0 );
+    ~NetworkClient();
 public slots :
     void            deferredStart();
 protected slots :
@@ -39,7 +39,7 @@ protected:
     void                        emitError( const QString &error );
     void                        emitDone();
 protected:
-    QScopedPointer<QAbstractSocket>   socket;
+    QScopedPointer<QAbstractSocket,QScopedPointerDeleteLater> socket;
     QString                     dstHost;
     quint16                     dstPort;
     int                         protocolRetry;

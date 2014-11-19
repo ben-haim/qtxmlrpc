@@ -4,7 +4,7 @@
 #include <QTcpSocket>
 #include <QDateTime>
 
-Client_::Client_ (const QString &dstHost, const quint16 dstPort , QObject* parent) :
+NetworkClient::NetworkClient (const QString &dstHost, const quint16 dstPort , QObject* parent) :
     QObject(parent),
     dstHost( dstHost ),
     dstPort( dstPort ),
@@ -25,14 +25,14 @@ Client_::Client_ (const QString &dstHost, const quint16 dstPort , QObject* paren
     connect( reconnectSleepTimer, SIGNAL(timeout()), SLOT(deferredStart()) );
 }
 
-Client_::~Client_()
+NetworkClient::~NetworkClient()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "~Protocol()";
     #endif
 }
 
-QAbstractSocket *Client_::buildSocket()
+QAbstractSocket *NetworkClient::buildSocket()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "buildSocket()";
@@ -40,7 +40,7 @@ QAbstractSocket *Client_::buildSocket()
     return new QTcpSocket;
 }
 
-void Client_::deferredStart()
+void NetworkClient::deferredStart()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug()<<QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << this << "deferredStart()";
@@ -78,7 +78,7 @@ void Client_::deferredStart()
         }
 }
 
-void Client_::connectSocket()
+void NetworkClient::connectSocket()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "connectSocket()";
@@ -86,7 +86,7 @@ void Client_::connectSocket()
     socket->connectToHost( dstHost, dstPort );
 }
 
-void Client_::onConnectTimeout()
+void NetworkClient::onConnectTimeout()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "onConnectTimeout()";
@@ -94,7 +94,7 @@ void Client_::onConnectTimeout()
     emitError( "Connect timeout" );
 }
 
-void Client_::onSocketStateChanged( QAbstractSocket::SocketState socketState )
+void NetworkClient::onSocketStateChanged( QAbstractSocket::SocketState socketState )
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "onSocketStateChanged(" << socketState << ")";
@@ -126,7 +126,7 @@ void Client_::onSocketStateChanged( QAbstractSocket::SocketState socketState )
         }
 }
 
-void Client_::onSocketError( QAbstractSocket::SocketError socketError )
+void NetworkClient::onSocketError( QAbstractSocket::SocketError socketError )
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "onSocketError(" << socketError << ")";
@@ -159,7 +159,7 @@ void Client_::onSocketError( QAbstractSocket::SocketError socketError )
         }
 }
 
-void Client_::protocolStart()
+void NetworkClient::protocolStart()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "protocolStart()";
@@ -171,7 +171,7 @@ void Client_::protocolStart()
     connect( socket.data(), SIGNAL( bytesWritten( qint64)), this, SLOT( onBytesWritten( qint64)) );
 }
 
-void Client_::protocolStop()
+void NetworkClient::protocolStop()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "protocolStop()";
@@ -183,7 +183,7 @@ void Client_::protocolStop()
     socket->abort();
 }
 
-void Client_::onBytesWritten( qint64  bytes  )
+void NetworkClient::onBytesWritten( qint64  bytes  )
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "onBytesWritten(" << bytes << ")";
@@ -192,7 +192,7 @@ void Client_::onBytesWritten( qint64  bytes  )
     #endif
 }
 
-void Client_::onReadyRead()
+void NetworkClient::onReadyRead()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "onReadyRead()";
@@ -204,7 +204,7 @@ void Client_::onReadyRead()
     #endif
 }
 
-void Client_::emitError( const QString &errTxt )
+void NetworkClient::emitError( const QString &errTxt )
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "emitError(...)";
@@ -219,7 +219,7 @@ void Client_::emitError( const QString &errTxt )
     emit    error( errTxt );
 }
 
-void Client_::emitDone()
+void NetworkClient::emitDone()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "emitDone()";
@@ -232,7 +232,7 @@ void Client_::emitDone()
     emit    done();
 }
 
-void Client_::sureWrite( const QByteArray &response )
+void NetworkClient::sureWrite( const QByteArray &response )
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "sureWrite(...)" << endl << response;
@@ -257,7 +257,7 @@ void Client_::sureWrite( const QByteArray &response )
     //socket->flush();
 }
 
-void Client_::stopTimers()
+void NetworkClient::stopTimers()
 {
     #ifdef DEBUG_PROTOCOL
     qDebug() << this << "stopTimers()";
