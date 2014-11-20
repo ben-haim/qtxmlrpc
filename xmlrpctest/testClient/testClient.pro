@@ -30,10 +30,10 @@ TARGET = testClient
 }
 
 CONFIG(debug, debug|release) {
-LIBS += -lqtxmlrpcd
+LIBS += -lqtxmlrpcd0
 }
 else {
-LIBS += -lqtxmlrpc
+LIBS += -lqtxmlrpc0
 }
 
 

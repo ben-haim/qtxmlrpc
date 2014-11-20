@@ -9,11 +9,14 @@
 
 #include <QtGlobal>
 
-
-#ifdef QXMLRPC_SHARED
-#  define QXMLRPC_DECL Q_DECL_EXPORT
+#ifndef QXMLRPC_STATIC
+    #ifdef QXMLRPC_SHARED
+    #  define QXMLRPC_DECL Q_DECL_EXPORT
+    #else
+    #  define QXMLRPC_DECL Q_DECL_IMPORT
+    #endif
 #else
-#  define QXMLRPC_DECL Q_DECL_IMPORT
+    #define QXMLRPC_DECL
 #endif
 
 #endif // QTXMLRPCCONFIG_HPP

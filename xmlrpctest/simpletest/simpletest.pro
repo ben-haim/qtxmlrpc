@@ -25,10 +25,10 @@ TARGET = simpletest
 }
 
 CONFIG(debug, debug|release) {
-LIBS += -lqtxmlrpcd
+LIBS += -lqtxmlrpcd0
 }
 else {
-LIBS += -lqtxmlrpc
+LIBS += -lqtxmlrpc0
 }
 
 unix: QMAKE_LFLAGS += -Wl,-rpath,'../../lib/$$basename(QMAKESPEC)/$$QT_VERSION'

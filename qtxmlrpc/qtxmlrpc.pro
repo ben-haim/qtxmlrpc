@@ -6,8 +6,13 @@
 TEMPLATE = lib
 QT = core network xml
 
-contains( CONFIG, staticlib ) {
+VER_MAJ = 0
+VER_MIN = 5
+VER_PAT = 0
 
+
+contains( CONFIG, staticlib ) {
+DEFINES += QXMLRPC_STATIC
 }
 else {
 CONFIG += dll
