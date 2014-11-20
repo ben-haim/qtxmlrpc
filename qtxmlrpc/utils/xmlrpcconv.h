@@ -4,30 +4,31 @@
 #include <QVariant>
 #include <QByteArray>
 #include <QDomElement>
+#include "qtxmlrpcconfig.hpp"
 
-QByteArray          toXmlRpcRequest   ( const QString m, const QVariantList &l );
-QVariant            fromXmlRpcResponse( const QString d,       QString      &err );
+QByteArray  QXMLRPC_DECL toXmlRpcRequest   ( const QString m, const QVariantList &l );
+QVariant    QXMLRPC_DECL fromXmlRpcResponse( const QString d,       QString      &err );
 
 /* returns default http header for our xmlrpc server */
-QByteArray          xmlRpcResponseHeader( const qint64 contentLength );
+QByteArray  QXMLRPC_DECL        xmlRpcResponseHeader( const qint64 contentLength );
 
 /* create xmlrpc response from QVariant */
-QByteArray          toXmlRpcResponse( const QVariant &v );
+QByteArray  QXMLRPC_DECL toXmlRpcResponse( const QVariant &v );
 
 /*
  * QVariant to xml conversions ;
  * use QByteArray & reference, becouse it is faster, then return QByteArray
  */
-void                toXmlRpcValue ( const int spaces, const QVariant     &child, QByteArray &b );
-void                toXmlRpcStruct( const int spaces, const QVariantMap  &child, QByteArray &b );
-void                toXmlRpcArray ( const int spaces, const QVariantList &child, QByteArray &b );
+void        QXMLRPC_DECL toXmlRpcValue ( const int spaces, const QVariant     &child, QByteArray &b );
+void        QXMLRPC_DECL toXmlRpcStruct( const int spaces, const QVariantMap  &child, QByteArray &b );
+void        QXMLRPC_DECL toXmlRpcArray ( const int spaces, const QVariantList &child, QByteArray &b );
 
 /* xml to QVariant conversions */
-QVariant            parseXmlRpcValue ( const QDomElement &e, QString &err );
-QVariant            parseXmlRpcStruct( const QDomElement &e, QString &err );
-QVariant            parseXmlRpcArray ( const QDomElement &e, QString &err );
+QVariant    QXMLRPC_DECL parseXmlRpcValue ( const QDomElement &e, QString &err );
+QVariant    QXMLRPC_DECL parseXmlRpcStruct( const QDomElement &e, QString &err );
+QVariant    QXMLRPC_DECL parseXmlRpcArray ( const QDomElement &e, QString &err );
 
-QVariantMap         getFaultCode     ( const QVariant& fc);
+QVariantMap QXMLRPC_DECL getFaultCode     ( const QVariant& fc);
 
 /*
  * Types from http://www.xmlrpc.com/spec maps into QVariant as: int - int, boolean
@@ -39,12 +40,6 @@ QVariantMap         getFaultCode     ( const QVariant& fc);
  * Use this in your callbacks, as return createFault( code, msg );
  * For example, in python, xmlrpclib.Fault exception will be raised.
  */
-inline QVariant createFault ( const int code, const QString &msg )
-{
-    QVariantMap f;
-    f["faultCode"  ] = code;
-    f["faultString"] = msg ;
-    return f;
-}
+QVariant QXMLRPC_DECL   createFault ( const int code, const QString &msg );
 
 #endif
