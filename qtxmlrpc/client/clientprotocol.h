@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QAbstractSocket>
 #include <QScopedPointer>
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 
 
 //#define DEBUG_PROTOCOL

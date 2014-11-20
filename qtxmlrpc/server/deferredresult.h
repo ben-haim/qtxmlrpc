@@ -9,7 +9,7 @@
 
 #include <QObject>
 #include <QVariant>
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 
 /*
  =======================================================================================================================

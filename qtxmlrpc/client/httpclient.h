@@ -11,7 +11,7 @@
 #include <utils/httpheader.h>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 
 // #define HTTP_CLIENT_DEBUG ;
 // #define TRACE_HTTP
