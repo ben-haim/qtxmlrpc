@@ -1,7 +1,7 @@
 
 
 #include <iostream>
-#include <qtxmlrpc.hpp>
+#include <qtxmlrpc.h>
 #include <QHostAddress>
 #include "server.h"
 

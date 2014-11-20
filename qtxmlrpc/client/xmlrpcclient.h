@@ -3,7 +3,7 @@
 #ifndef XMLRPCCLIENT_H
 #define XMLRPCCLIENT_H
 #include "httpclient.h"
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 #include <QObject>
 #include <QString>
 #include <QVariant>

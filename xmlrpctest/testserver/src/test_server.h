@@ -4,7 +4,7 @@
 
 #include <QObject>
 #include <QVariant>
-#include <qtxmlrpc.hpp>
+#include <qtxmlrpc.h>
 
 class TServer :
     QObject
