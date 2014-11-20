@@ -6,7 +6,7 @@
 
 #include <QDateTime>
 #include <QApplication>
-#include <qtxmlrpc.hpp>
+#include <qtxmlrpc.h>
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 

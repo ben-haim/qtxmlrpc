@@ -9,7 +9,7 @@
 #include <QString>
 #include <QVariant>
 #include <utils/httpheader.h>
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 #include "httpserver.h"
 #include "deferredresult.h"
 

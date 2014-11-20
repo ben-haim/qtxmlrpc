@@ -44,13 +44,13 @@ HEADERS += \
     client/xmlrpcclient.h \
     server/xmlrpcserver.h \
     utils/xmlrpcconv.h \
-    qtxmlrpcconfig.hpp \
-    qtxmlrpc.hpp \
     server/protocol.h \
     server/httpserver.h \
     server/deferredresult.h \
     utils/sslparams.h \
-    utils/httpheader.h
+    utils/httpheader.h \
+    qtxmlrpc.h \
+    qtxmlrpcconfig.h
 
 SOURCES += \
     client/clientprotocol.cpp \

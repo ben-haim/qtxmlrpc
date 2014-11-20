@@ -7,7 +7,7 @@
 #ifndef QTXMLRPC_HPP
 #define QTXMLRPC_HPP
 
-#include <qtxmlrpcconfig.hpp>
+#include <qtxmlrpcconfig.h>
 #include <client/xmlrpcclient.h>
 #include <server/xmlrpcserver.h>
 #include <utils/httpheader.h>
