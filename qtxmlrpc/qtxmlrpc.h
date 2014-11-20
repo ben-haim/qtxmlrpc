@@ -11,5 +11,6 @@
 #include <client/xmlrpcclient.h>
 #include <server/xmlrpcserver.h>
 #include <utils/httpheader.h>
+#include <utils/xmlrpcconv.h>
 
 #endif // QTXMLRPC_HPP
