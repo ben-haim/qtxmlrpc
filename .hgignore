@@ -1,0 +1,34 @@
+# use glob syntax.
+syntax: glob
+
+*.exe
+*.dll
+*.obj
+*.res
+*.manifest
+*.lib
+*.pdb
+moc*.cpp
+ui*.h
+*.log
+*.bak
+*.db
+*.pro.*
+*.ilk
+*.o
+*.a
+*.so
+Makefile*
+
+xmlrpctest/bin/simpletest
+xmlrpctest/bin/simpletestd
+xmlrpctest/bin/testClient
+xmlrpctest/bin/testClientd
+xmlrpctest/bin/testsrv
+xmlrpctest/bin/testsrvd
+qrc_*.cpp
+*.rc
+*.so*
+*.Release
+*.Debug
+*.exp
