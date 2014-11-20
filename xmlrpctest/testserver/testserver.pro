@@ -26,12 +26,17 @@ MOC_DIR = build/release
 TARGET = testsrv
 }
 
+QTXMLLIBSUFFIX = ""
+win32{
+QTXMLLIBSUFFIX = "0"
+}
 CONFIG(debug, debug|release) {
-LIBS += -lqtxmlrpcd0
+LIBS += -lqtxmlrpcd$$QTXMLLIBSUFFIX
 }
 else {
-LIBS += -lqtxmlrpc0
+LIBS += -lqtxmlrpc$$QTXMLLIBSUFFIX
 }
+
 
 unix: QMAKE_LFLAGS += -Wl,-rpath,'../../lib/$$basename(QMAKESPEC)/$$QT_VERSION'
 unix: QMAKE_LFLAGS += -Wl,-rpath,'.'
