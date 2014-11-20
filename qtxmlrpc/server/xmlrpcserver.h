@@ -8,20 +8,15 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
-#include <utils/httpheader.h>
 #include "qtxmlrpcconfig.h"
 #include "httpserver.h"
 #include "deferredresult.h"
 
-#ifndef QT_NO_OPENSSL
-#include "utils/sslparams.h"
-#endif
 
-/*
- * #define DEBUG_XMLRPC ;
- * use spaces in xmlrpc formattin
- */
+//use spaces in xmlrpc formattin
 #define XMLRPC_WITHSPACES
+
+class SslParams;
 
 class QXMLRPC_DECL XmlRpcServer : public QTcpServer
 {

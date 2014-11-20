@@ -4,7 +4,7 @@
 #include <QVariant>
 #include <QByteArray>
 #include <QDomElement>
-#include "qtxmlrpcconfig.hpp"
+#include "qtxmlrpcconfig.h"
 
 QByteArray  QXMLRPC_DECL toXmlRpcRequest   ( const QString m, const QVariantList &l );
 QVariant    QXMLRPC_DECL fromXmlRpcResponse( const QString d,       QString      &err );

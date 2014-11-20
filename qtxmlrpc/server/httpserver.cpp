@@ -7,7 +7,8 @@
 #include "httpserver.h"
 #include <QTcpSocket>
 #include <QSslSocket>
-#include "utils/xmlrpcconv.h"
+#include "xmlrpcconv.h"
+#include "httpheader.h"
 
 HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
     Protocol( parent, _timeout ),
@@ -16,6 +17,7 @@ HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "HttpServer():" << parent;
     #endif
+    requestHeader.reset(new HttpRequestHeader());
     connect( socket, SIGNAL( readyRead()), this, SLOT( slotReadyRead()) );
     connect( socket, SIGNAL( bytesWritten( qint64)), this, SLOT( slotBytesWritten( qint64)) );
     #ifndef QT_NO_OPENSSL
@@ -31,13 +33,17 @@ HttpServer::HttpServer(QAbstractSocket *parent , const int _timeout) :
                     slotReadyRead();
                 }
         }
-
     #else
     if ( socket->bytesAvailable() > 0 )
         {
             slotReadyRead();
         }
-    #endif
+#endif
+}
+
+HttpServer::~HttpServer()
+{
+
 }
 
 void HttpServer::slotReadyRead()
@@ -73,7 +79,7 @@ void HttpServer::slotReadyRead()
                     qDebug() << this << "slotReadyRead(): emit requestReceived()";
                     #endif
 
-                    emit    requestReceived( this, requestHeader, requestBody );
+                    emit    requestReceived( this, *requestHeader, requestBody );
                     break;
                 }
         case ReadingBody:
@@ -88,7 +94,7 @@ void HttpServer::slotReadyRead()
                     qDebug() << this << "slotReadyRead(): emit requestReceived()";
                     #endif
 
-                    emit    requestReceived( this, requestHeader, requestBody );
+                    emit    requestReceived( this, *requestHeader, requestBody );
                 }
             break;
         case WaitingReply:
@@ -137,19 +143,19 @@ bool HttpServer::readRequestHeader()
         }
 
     //requestHeader= QHttpRequestHeader( requestHeaderBody );
-    requestHeader = HttpRequestHeader( requestHeaderBody );
+    requestHeader.reset(new HttpRequestHeader( requestHeaderBody ));
     requestHeaderBody.clear();
     requestBody.clear();
-    if ( requestHeader.isValid() )
+    if ( requestHeader->isValid() )
         {
             #ifdef DEBUG_XMLRPC
-            qDebug() << this << "readRequestHeader(): header valid" << endl << requestHeader.toString();
+            qDebug() << this << "readRequestHeader(): header valid" << endl << requestHeader->toString();
             #endif
             return true;
         }
 
     qWarning() << this << "readRequestHeader(): invalid requestHeader, emit parseError()"
-               << endl << requestHeader.toString();
+               << endl << requestHeader->toString();
 
     emit    parseError( this );
     return false;
@@ -157,9 +163,9 @@ bool HttpServer::readRequestHeader()
 
 bool HttpServer::readRequestBody()
 {
-    Q_ASSERT( requestHeader.isValid() );
+    Q_ASSERT( requestHeader->isValid() );
 
-    qint64  bytesToRead= ( qint64 ) requestHeader.contentLength() - ( qint64 ) requestBody.size();
+    qint64  bytesToRead= ( qint64 ) requestHeader->contentLength() - ( qint64 ) requestBody.size();
     if ( bytesToRead > socket->bytesAvailable() )
         bytesToRead = socket->bytesAvailable();
     #ifdef DEBUG_XMLRPC
@@ -168,9 +174,9 @@ bool HttpServer::readRequestBody()
     requestBody.append( socket->read( bytesToRead) );
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "readRequestBody(): already read" << requestBody.size()
-             << "contentLength" << requestHeader.contentLength();
+             << "contentLength" << requestHeader->contentLength();
     #endif
-    if ( requestBody.size() == ( int ) requestHeader.contentLength() )
+    if ( requestBody.size() == ( int ) requestHeader->contentLength() )
         return true;
     else
         return false;
@@ -181,8 +187,8 @@ bool HttpServer::requestContainsBody()
     #ifdef DEBUG_XMLRPC
     qDebug() << this << "requestContainsBody()";
     #endif
-    Q_ASSERT( requestHeader.isValid() );
-    return requestHeader.hasContentLength() && requestHeader.hasContentLength();
+    Q_ASSERT( requestHeader->isValid() );
+    return requestHeader->hasContentLength() && requestHeader->hasContentLength();
 }
 
 void HttpServer::slotBytesWritten( qint64 bytes )

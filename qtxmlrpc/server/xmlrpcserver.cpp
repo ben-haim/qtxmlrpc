@@ -9,6 +9,10 @@
 #include <QFile>
 #include "xmlrpcserver.h"
 #include "xmlrpcconv.h"
+#include "httpheader.h"
+#ifndef QT_NO_OPENSSL
+#include "sslparams.h"
+#endif
 
 
 XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString &key, const QByteArray & ) :

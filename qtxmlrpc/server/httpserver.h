@@ -7,8 +7,11 @@
 #ifndef HTTPSERVER_HPP
 #define HTTPSERVER_HPP
 
+#include <QScopedPointer>
 #include "protocol.h"
-#include "utils/httpheader.h"
+//#include "httpheader.h"
+
+class HttpRequestHeader;
 
 /* very basic HttpServer for XmlRpc */
 class HttpServer : public Protocol
@@ -16,6 +19,7 @@ class HttpServer : public Protocol
     Q_OBJECT
 public:
     HttpServer( QAbstractSocket *parent, const int _timeout = 10000  );
+    ~HttpServer();
 public slots :
 
     /* sends xmlrpc response from QVariant param */
@@ -38,7 +42,7 @@ private:
     enum State { ReadingHeader, ReadingBody, WaitingReply, SendingReply, Done } state;
     QString requestHeaderBody;
     QByteArray requestBody;
-    HttpRequestHeader requestHeader;
+    QScopedPointer<HttpRequestHeader> requestHeader;
     qint64 bytesWritten;
     qint64 bytesToWrite;
 };

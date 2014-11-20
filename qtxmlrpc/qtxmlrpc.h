@@ -12,5 +12,9 @@
 #include <server/xmlrpcserver.h>
 #include <utils/httpheader.h>
 #include <utils/xmlrpcconv.h>
+#include <utils/httpheader.h>
+#ifndef QT_NO_OPENSSL
+#include <utils/sslparams.h>
+#endif
 
 #endif // QTXMLRPC_HPP
