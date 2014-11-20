@@ -11,11 +11,12 @@
 #include <utils/httpheader.h>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
+#include "qtxmlrpcconfig.hpp"
 
 // #define HTTP_CLIENT_DEBUG ;
 // #define TRACE_HTTP
 
-class HttpClient : public NetworkClient
+class QXMLRPC_DECL HttpClient : public NetworkClient
 {
     Q_OBJECT
 public:

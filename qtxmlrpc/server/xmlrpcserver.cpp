@@ -20,6 +20,8 @@ XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString 
     #ifndef QT_NO_OPENSSL
     if ( !cert.isEmpty() && !key.isEmpty() )
         sslParams = new SslParams( cert, key );
+    else
+        sslParams = NULL;
     #endif
 
     connect(this, SIGNAL(newConnection()), this, SLOT(onNewConnection()) );

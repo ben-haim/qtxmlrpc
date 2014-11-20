@@ -8,11 +8,12 @@
 #include <QTimer>
 #include <QAbstractSocket>
 #include <QScopedPointer>
+#include "qtxmlrpcconfig.hpp"
 
 
 //#define DEBUG_PROTOCOL
 
-class NetworkClient :  public QObject
+class QXMLRPC_DECL NetworkClient :  public QObject
 {
     Q_OBJECT
 

@@ -31,3 +31,4 @@ qrc_*.cpp
 *.so*
 *.Release
 *.Debug
+*.exp
