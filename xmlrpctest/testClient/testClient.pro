@@ -29,12 +29,17 @@ MOC_DIR = build/release
 TARGET = testClient
 }
 
+QTXMLLIBSUFFIX = ""
+win32{
+QTXMLLIBSUFFIX = "0"
+}
 CONFIG(debug, debug|release) {
-LIBS += -lqtxmlrpcd0
+LIBS += -lqtxmlrpcd$$QTXMLLIBSUFFIX
 }
 else {
-LIBS += -lqtxmlrpc0
+LIBS += -lqtxmlrpc$$QTXMLLIBSUFFIX
 }
+
 
 
 SOURCES += ./src/main.cpp\
