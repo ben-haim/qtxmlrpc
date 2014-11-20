@@ -450,10 +450,19 @@ QVariant parseXmlRpcArray( const QDomElement &e, QString &err )
 
     return r;
 }
+
 QVariantMap getFaultCode(const QVariant &fc)
 {
     if(isFault(fc))
         return fc.toMap();
 
     return QVariantMap();
+}
+
+QVariant createFault ( const int code, const QString &msg )
+{
+    QVariantMap f;
+    f["faultCode"  ] = code;
+    f["faultString"] = msg ;
+    return f;
 }
