@@ -34,7 +34,8 @@ XmlRpcServer::XmlRpcServer( QObject *parent, const QString &cert, const QString 
 XmlRpcServer::~XmlRpcServer()
 {
 #ifndef QT_NO_OPENSSL
-    delete sslParams;
+    if(sslParams != NULL)
+        delete sslParams;
 #endif
 }
 
