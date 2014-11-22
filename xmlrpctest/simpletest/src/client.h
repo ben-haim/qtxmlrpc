@@ -25,6 +25,7 @@ private:
 
     QVariantList test_elements_;
     int          cur_idx_;
+    int          ansvers;
 };
 
 #endif /* CLIENT_H */

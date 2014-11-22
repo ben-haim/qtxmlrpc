@@ -4,14 +4,14 @@
 #include <qtxmlrpc.h>
 #include <QVariantList>
 #include <QCoreApplication>
-#include <iostream>
-
+#include <QTimer>
 
 Client::Client ( const QString &address, quint16 port, QObject *parent ) :
     QObject( parent ),
     address( address ),
     port( port ),
-    cur_idx_(0)
+    cur_idx_(0),
+    ansvers(0)
 {
     QVariantMap m;
     m["one"]  = 1;
@@ -35,7 +35,7 @@ void Client::testFunc( const QVariant &param )
     connect( client, SIGNAL( error ( const QString & )), this, SLOT( onError ( const QString & )) );
     client->execute( "testFunc", QVariantList() << param );
 
-    qDebug() << Q_FUNC_INFO << "  " << param;
+    qDebug() << param;
 }
 
 void Client::onDataReady( const QVariant &response )
@@ -44,15 +44,15 @@ void Client::onDataReady( const QVariant &response )
     if( c )
         c->deleteLater();
 
-    qDebug() << response;
     ready    = true;
     res      = response;
 
+    if(! test_elements_.contains(response))
+        qDebug()<< Q_FUNC_INFO <<" " << response.toString() ;
+    else
+        ansvers++;
 
-    std::cout<<"Client::onDataReady " << response.toString().toStdString()<<std::endl;
-
-    testNext();
-
+    QTimer::singleShot(20,this, SLOT(testNext())) ;
 }
 
 void Client::onError( const QString &errTxt )
@@ -72,6 +72,17 @@ void Client::testNext()
 {
     if(cur_idx_ < test_elements_.size())
         testFunc(test_elements_[cur_idx_++]);
+    else
+        {
+            if(ansvers == test_elements_.size())
+                qDebug() << "We received all ansvers. Test passed.";
+            else
+                {
+                    qDebug() << "We received " << ansvers << " ansvers. But we wait for " << test_elements_.size() ;
+                    qDebug() << "Test not passed.";
+                }
+            QTimer::singleShot(20,qApp,SLOT(quit()) );
+        }
 }
 
 QVariant Client::operator   ( ) ( const QVariant &param )
@@ -87,5 +98,5 @@ QVariant Client::operator   ( ) ( const QVariant &param )
 
 void Client::start()
 {
-    testFunc(test_elements_[cur_idx_++]);
+    testNext();
 }
