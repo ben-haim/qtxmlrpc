@@ -1,6 +1,4 @@
 
-
-#include <iostream>
 #include <qtxmlrpc.h>
 #include <QHostAddress>
 #include "server.h"
@@ -23,12 +21,11 @@ TServer::TServer ( const QString &address, quint16 port, QObject *parent ) :
 }
 TServer::~TServer()
 {
-    std::cout << "Delete XML-RPC server..." << std::endl;
+    qDebug() << "Delete XML-RPC server..." ;
     delete srv_;
 }
 
 QVariant TServer::testFunc( const QVariant &param )
 {
-    qDebug() << Q_FUNC_INFO << " " << param;
     return param;
 }
