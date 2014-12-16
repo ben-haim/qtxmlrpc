@@ -1,7 +1,7 @@
-/* file : main.cpp
+/* file    : main.cpp
  * created : 11.01.2012
- * author : Slyshyk Oleksiy (alex312@meta.ua)
-*/
+ * author  : Slyshyk Oleksiy (alexSlyshyk@gmail.com)
+ */
 
 
 #include <QApplication>

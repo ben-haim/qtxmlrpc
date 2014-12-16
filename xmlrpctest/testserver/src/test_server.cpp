@@ -1,7 +1,7 @@
 
-#include <iostream>
 #include "test_server.h"
 #include <QHostAddress>
+#include <QDebug>
 #include <QTime>
 
 
@@ -15,44 +15,44 @@ TServer::TServer ( const QString &address, quint16 port, QObject *parent ) :
             srv->registerSlot( this, SLOT(testFunc(QVariant)) );
             srv->registerSlot( this, SLOT(echo(QVariant)));
             srv->registerSlot( this, SLOT(deferredEcho(QVariant)));
-            std::cout << QTime::currentTime().toString().toStdString()
+            qDebug() << QTime::currentTime().toString()
                       << " Start XML-RPC server. " << "Adress:"
-                      << QHostAddress( address ).toString().toStdString()
-                      << " Port:" << port << std::endl;
-            std::cout << "Server build with Qt " << QT_VERSION_STR << std::endl;
+                      << QHostAddress( address ).toString()
+                      << " Port:" << port ;
+            qDebug() << "Server build with Qt " << QT_VERSION_STR ;
         }
 }
 
 TServer::~TServer()
 {
-    std::cout << "Delete XML-RPC server..." << std::endl;
+    qDebug() << "Delete XML-RPC server..." ;
     srv->deleteLater();
 }
 
 QVariant TServer::testFunc( const QVariant &param )
 {
-    std::cout << QTime::currentTime().toString().toStdString()
+    qDebug()  << QTime::currentTime().toString()
               << " testFunc: "
-              << param.toString().toStdString()
-              << std::endl;
+              << param.toString()
+              ;
     return param;
 }
 
 QVariant TServer::echo(const QVariant& e)
 {
-    std::cout << QTime::currentTime().toString().toStdString()
+    qDebug() << QTime::currentTime().toString()
               << " echo: "
-              << e.toString().toStdString()
-              << std::endl;
+              << e.toString()
+              ;
     return e;
 }
 
 DeferredResult*TServer::deferredEcho(const QVariant& e)
 {
-    std::cout << QTime::currentTime().toString().toStdString()
+    qDebug() << QTime::currentTime().toString()
               << " deferredEcho: "
-              << e.toString().toStdString()
-              << std::endl;
+              << e.toString()
+              ;
     return new DeferredEcho( e );
 }
 
