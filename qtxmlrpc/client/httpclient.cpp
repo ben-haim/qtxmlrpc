@@ -5,8 +5,9 @@
 HttpClient::HttpClient (const QString &host,
                         const quint16 port,
                         const QString &path,
-                        const HttpMethod method ,
-                        QObject* parent) :
+                        const HttpMethod method,
+                        QObject* parent
+                        ) :
     NetworkClient( host, port, parent ),
     httpState( Waiting ),
     method( method )
@@ -40,29 +41,32 @@ void HttpClient::onReadyRead()
             #endif
 
             /* если не дочитан */
-            if ( !readResponseHeader() ) break;
+            if ( !readResponseHeader() )
+                break;
             if ( responseHeader.statusCode() == 100 )
-              {
+                {
 
-                /*
-                 * Continue ;
-                 * это нам говорят продолжай слать пост, игнорируем, опять будем читать хидер
-                 */
-                break;
-              }
+                    /*
+                     * Continue ;
+                     * это нам говорят продолжай слать пост, игнорируем, опять будем читать хидер
+                     */
+                    break;
+                }
             else if ( responseHeader.statusCode() == 302 )
-              {
+                {
 
-                /* Moved temporary */
-                if ( responseHeader.hasKey( "Location") )
-                  {
-                    QString location= responseHeader.value( "Location" );
-                    if ( location.at( 0) == '/' ) url.setPath( location );
-                    else url.setUrl( location );
-                    method= GET;
-                  }
-                break;
-              }
+                    /* Moved temporary */
+                    if ( responseHeader.hasKey( "Location") )
+                        {
+                            QString location= responseHeader.value( "Location" );
+                            if ( location.at( 0) == '/' )
+                                url.setPath( location );
+                            else
+                                url.setUrl( location );
+                            method= GET;
+                        }
+                    break;
+                }
 
             httpState = ReadingResponseBody;
         case ReadingResponseBody:
@@ -71,7 +75,8 @@ void HttpClient::onReadyRead()
             #endif
 
             /* если не дочитан */
-            if ( !readResponseBody() ) break;
+            if ( !readResponseBody() )
+                break;
             emitDone();
             break;
         default:
@@ -89,17 +94,24 @@ void HttpClient::protocolStop()
 void HttpClient::protocolStart()
 {
     NetworkClient::protocolStart();
-    Q_ASSERT( httpState == Waiting );
+    //Q_ASSERT( httpState == Waiting );
+    if(httpState == Waiting)
+        {
+            qCritical() << "Multiple protocol starts.";
+        }
 
     QString path= url.path();
-    if ( path.isEmpty() ) path= "/";
+    if ( path.isEmpty() )
+        path= "/";
     #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-    if ( method == GET && url.hasQuery() ) path+= "?" + url.encodedQuery();
+    if ( method == GET && url.hasQuery() )
+        path+= "?" + url.encodedQuery();
     #else
-    if ( method == GET && url.hasQuery() ) path+= "?" + url.query();
+    if ( method == GET && url.hasQuery() )
+        path+= "?" + url.query();
     #endif
 
-    HttpRequestHeader  h( method == GET ? "GET" : "POST", path );
+    HttpRequestHeader h( method == GET ? "GET" : "POST", path );
     h.setValue( "Host", QUrl::toAce( url.host()) );
     h.setValue( "User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)" );
     h.setValue( "Accept", "*/*" );
@@ -108,22 +120,23 @@ void HttpClient::protocolStart()
 
     QList<QNetworkCookie>   cookieList= cookieJar.cookiesForUrl( url );
     foreach( QNetworkCookie nc, cookieList )
-      {
-        QByteArray  cookieNameVal;
+    {
+        QByteArray cookieNameVal;
         cookieNameVal.append( nc.name() );
         cookieNameVal.append( "=" );
         cookieNameVal.append( nc.value() );
         h.addValue( "Cookie", cookieNameVal );
-      }
+    }
 
     if ( method == POST )
-      {
-        h.setValue( "Content-Type", "text/xml" );
-        h.setValue( "Content-Length", QString::number( postData.length()) );
-      }
+        {
+            h.setValue( "Content-Type", "text/xml" );
+            h.setValue( "Content-Length", QString::number( postData.length()) );
+        }
 
-    QByteArray  requestHeader( h.toString().toLatin1() );
-    if ( method == POST ) requestHeader.append( postData );
+    QByteArray requestHeader( h.toString().toLatin1() );
+    if ( method == POST )
+        requestHeader.append( postData );
     #ifdef TRACE_HTTP
     qDebug() << "--- request header ---" << endl << requestHeader
              << endl <<"--- --------- ---";
@@ -143,43 +156,46 @@ bool HttpClient::readResponseHeader()
     qDebug() << this << "HttpClient::readResponseHeader()";
     #endif
 
-    bool        end= false;
-    QByteArray  tmp;
+    bool end= false;
+    QByteArray tmp;
     QByteArray rn( "\r\n", 2 ), n( "\n", 1 );
     while ( !end && socket->canReadLine() )
-      {
-        tmp= socket->readLine();
-        if ( tmp == rn || tmp == n || tmp.isEmpty() ) end = true;
-        else responseHeaderData+= tmp;
-      }
+        {
+            tmp= socket->readLine();
+            if ( tmp == rn || tmp == n || tmp.isEmpty() )
+                end = true;
+            else
+                responseHeaderData+= tmp;
+        }
 
-    if ( !end ) return false;
+    if ( !end )
+        return false;
     responseHeader = HttpResponseHeader( QString( responseHeaderData) );
     #ifdef TRACE_HTTP
     qDebug() << "--- response header ---" << endl << responseHeader.toString();
     #endif
     if ( responseHeader.isValid() )
-      {
-        if ( responseHeader.hasKey( "Set-Cookie") )
-          {
-            QByteArray                      cba;
-            QList<QPair<QString, QString> > keys= responseHeader.values();
-            QPair<QString, QString>         p;
-            foreach( p, keys )
-              {
-                if ( p.first == "Set-Cookie" )
-                  {
-                    cba.append( p.second );
-                    cba.append( "\n" );
-                  }
-              }
+        {
+            if ( responseHeader.hasKey( "Set-Cookie") )
+                {
+                    QByteArray cba;
+                    QList<QPair<QString, QString> > keys= responseHeader.values();
+                    QPair<QString, QString>         p;
+                    foreach( p, keys )
+                    {
+                        if ( p.first == "Set-Cookie" )
+                            {
+                                cba.append( p.second );
+                                cba.append( "\n" );
+                            }
+                    }
 
-            QList<QNetworkCookie>   cookieList= QNetworkCookie::parseCookies( cba );
-            cookieJar.setCookiesFromUrl( cookieList, url );
-          }
+                    QList<QNetworkCookie>   cookieList= QNetworkCookie::parseCookies( cba );
+                    cookieJar.setCookiesFromUrl( cookieList, url );
+                }
 
-        return true;
-      }
+            return true;
+        }
 
     qWarning() << this << "readResponseHeader(): invalid responseHeader";
     emitError( "Invalid response header" );
@@ -191,46 +207,48 @@ bool HttpClient::readResponseBody()
     if ( responseHeader.hasContentLength() )
         return readContentLength();
     else if ( responseHeader.value( "Connection") == "close" )
-      {
-        responseBodyData+= socket->readAll();
-        return false;
-      }
+        {
+            responseBodyData+= socket->readAll();
+            return false;
+        }
     else
-      {
+        {
 
-        /*
-         * QByteArray data = socket->readAll();
-         * qCritical() << this << "XmlRpcClient::readResponseBody():" << "unknown content
-         * read method" << endl << responseHeader.toString() << endl;
-         * emitError( "Unknown content read method" );
-         * ;
-         * Code sended by Kevin Tallakson(ktallakson@gmail.com)
-         */
-        QByteArray              data= socket->peek( socket->bytesAvailable() );
-        static const QByteArray METHOD_RESPONSE_TERM_TAG( "</methodResponse>" );
-        int                     termTagIndex= data.indexOf( METHOD_RESPONSE_TERM_TAG );
-        bool                    foundEndOfResponse= termTagIndex > 0;
-        if ( foundEndOfResponse )
-          {
-            int remainderIndex= termTagIndex + METHOD_RESPONSE_TERM_TAG.size();
-            if ( data[remainderIndex] == '\r' ) ++remainderIndex;
-            if ( data[remainderIndex] == '\n' ) ++remainderIndex;
-            data.truncate( remainderIndex );
-          }
+            /*
+             * QByteArray data = socket->readAll();
+             * qCritical() << this << "XmlRpcClient::readResponseBody():" << "unknown content
+             * read method" << endl << responseHeader.toString() << endl;
+             * emitError( "Unknown content read method" );
+             * ;
+             * Code sended by Kevin Tallakson(ktallakson@gmail.com)
+             */
+            QByteArray data= socket->peek( socket->bytesAvailable() );
+            static const QByteArray METHOD_RESPONSE_TERM_TAG( "</methodResponse>" );
+            int termTagIndex= data.indexOf( METHOD_RESPONSE_TERM_TAG );
+            bool foundEndOfResponse= termTagIndex > 0;
+            if ( foundEndOfResponse )
+                {
+                    int remainderIndex= termTagIndex + METHOD_RESPONSE_TERM_TAG.size();
+                    if ( data[remainderIndex] == '\r' )
+                        ++remainderIndex;
+                    if ( data[remainderIndex] == '\n' )
+                        ++remainderIndex;
+                    data.truncate( remainderIndex );
+                }
 
-        responseBodyData+= data;
-        socket->read( data.size() );
-        return foundEndOfResponse;
-      }
+            responseBodyData+= data;
+            socket->read( data.size() );
+            return foundEndOfResponse;
+        }
 
     return false;
 }
 
 bool HttpClient::readContentLength()
 {
-    qint64      l= ( qint64 ) responseHeader.contentLength();
-    qint64      n= qMin( socket->bytesAvailable(), l - responseBodyData.size() );
-    QByteArray  readed( socket->read( n) );
+    qint64 l= ( qint64 ) responseHeader.contentLength();
+    qint64 n= qMin( socket->bytesAvailable(), l - responseBodyData.size() );
+    QByteArray readed( socket->read( n) );
     responseBodyData+= readed;
     #ifdef HTTP_CLIENT_DEBUG
     qDebug() << this << "readContentLength(), left:" << ( l - responseBodyData.length() );
@@ -244,7 +262,7 @@ void HttpClient::onProtocolDone()
     qDebug() << this << "onProtocolDone()";
     #endif
 
-    emit    dataRecieved();
-    emit    dataReady( responseBodyData );
+    emit dataRecieved();
+    emit dataReady( responseBodyData );
 }
 

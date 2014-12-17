@@ -30,6 +30,7 @@ MainWindow::MainWindow( QWidget *parent ) :
 
 MainWindow::~MainWindow()
 {
+    delete client_;
     delete ui;
 }
 

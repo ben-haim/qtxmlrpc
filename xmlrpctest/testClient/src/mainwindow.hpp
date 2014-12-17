@@ -32,8 +32,8 @@ private slots:
     void onError( const QString &errTxt );
 private:
     Ui::MainWindow * ui;
-    bool ready_;
     XmlRpcClient * client_;
+    bool ready_;
 };
 
 #endif /* MAINWINDOW_HPP */
