@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QMutex>
 #include <QTimer>
+#include <qtxmlrpc.h>
 
 #include "server.h"
 #include "client.h"
@@ -21,7 +22,13 @@ int main( int argc, char **argv )
     TServer s( address, port );
     Client  c( address, port );
 
-    QTimer::singleShot( 1, &c, SLOT( start() ) );
+    //QTimer::singleShot( 1, &c, SLOT( start() ) );
+    NotNullStreamDebug() << "Test 1;" ;
+    //LOG_IF_DEBUG(1) << "Test cond. debug. I must see that.";
+
+    LOG_IF_DEBUG(0) << "If you see that. Something wrong.";
+
+    LOG_IF_TEST(1) << "log test 1" ;
 
     return app.exec();
 

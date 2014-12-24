@@ -50,7 +50,8 @@ HEADERS += \
     utils/sslparams.h \
     utils/httpheader.h \
     qtxmlrpc.h \
-    qtxmlrpcconfig.h
+    qtxmlrpcconfig.h \
+    utils/logger.h
 
 SOURCES += \
     client/clientprotocol.cpp \
